@@ -18,5 +18,6 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
+    path("", lambda request: HttpResponse("Django is running on Heroku 🚀")),
     path('admin/', admin.site.urls),
 ]
