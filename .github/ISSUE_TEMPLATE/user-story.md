@@ -10,12 +10,11 @@ assignees: ''
 ## Stakeholder Type
 - [ ] CIO Seeker
 - [ ] CIO Representative
+- [ ] CIO Member
 - [ ] Administrator
 - [ ] Other: _______
 
 ---
-
-## Format
 
 As a [stakeholder type],
 I want to [perform some action],
