@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from .views import homepage
 
 urlpatterns = [
-    path("", lambda request: HttpResponse("Django is running on Heroku 🚀")),
+    path("", homepage, name="homepage"),
     path('admin/', admin.site.urls),
     path("accounts/", include("allauth.urls")),
 ]

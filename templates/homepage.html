@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CS3240 Project</title>
+</head>
+<body>
+
+<h1>Django is running on Heroku 🚀</h1>
+
+{% if user.is_authenticated %}
+    <p>Welcome {{ user.email }}</p>
+    <a href="/accounts/logout/">Logout</a>
+{% else %}
+    <a href="/accounts/google/login/">Sign in with Google</a>
+{% endif %}
+
+</body>
+</html>
