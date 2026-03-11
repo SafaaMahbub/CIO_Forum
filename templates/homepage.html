@@ -2,17 +2,48 @@
 <html>
 <head>
     <title>CS3240 Project</title>
+    <style>
+
+        body{
+            margin: 0;
+        }
+        nav{
+        background-color: #4682B4;
+        color: white;
+        overflow: hidden;
+        padding: 10px;
+        }
+    nav a {
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    nav a:hover{
+        background-color: brown;
+        color: chocolate;
+        font-size: 20px;
+    }
+
+    nav a.active{
+        background-color: aqua;
+        color: white;
+    }
+    </style>
 </head>
 <body>
 
-<h1>Django is running on Heroku 🚀</h1>
+<!--<h1>Django is running on Heroku 🚀</h1>-->
 
 {% if user.is_authenticated %}
-    <p>Welcome {{ user.email }}</p>
-<nav >
-    <a href="profile/">Go To Profile</a>
+<nav>
+    <a href="/">Home</a>
     <a href="/accounts/logout/">Logout</a>
+    <a href="/profile/">Profile</a>
 </nav>
+    <p>Welcome {{ user.email }}</p>
+
 {% else %}
     <a href="/accounts/google/login/">Sign in with Google</a>
 {% endif %}

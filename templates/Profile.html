@@ -3,16 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile Page</title>
+    <style>
+        body{
+            font-family: "Times New Roman";
+            background-color:#C4D8E2;
+            margin: 0;
+        }
+
+        h1{
+            font-size: 25px;
+            text-align: center;
+        }
+
+        nav{
+            background-color: #4682B4;
+            color: white;
+            overflow: hidden;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        nav a:hover{
+            background-color: brown;
+            color: chocolate;
+            font-size: 20px;
+        }
+
+        nav a.active{
+            background-color: aqua;
+            color: white;
+        }
+        .info{
+            text-align: center;
+            padding: 30px;
+        }
+
+    </style>
 </head>
-<body style="background-color:#C4D8E2">
+<body >
 <nav>
-    <a href="">Home</a>
+    <a href="/">Home</a>
     <a href="/accounts/logout/">Logout</a>
+    <a href="/profile/">Profile</a>
 </nav>
 <h1>Welcome {{user.email}}</h1>
-
+<div class="info">
 <p>Email: {{user.email}}</p>
 <p>Role: {{user.role}}</p>
+</div>
 
 </body>
 </html>
