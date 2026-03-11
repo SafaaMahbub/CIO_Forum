@@ -9,7 +9,10 @@
 
 {% if user.is_authenticated %}
     <p>Welcome {{ user.email }}</p>
+<nav >
+    <a href="profile/">Go To Profile</a>
     <a href="/accounts/logout/">Logout</a>
+</nav>
 {% else %}
     <a href="/accounts/google/login/">Sign in with Google</a>
 {% endif %}
