@@ -1,17 +1,36 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>CS3240 Project</title>
 </head>
+
 <body>
 
 <h1>Django is running on Heroku 🚀</h1>
 
 {% if user.is_authenticated %}
-    <p>Welcome {{ user.email }}</p>
-    <a href="/accounts/logout/">Logout</a>
+
+<p>Welcome {{ user.email }}</p>
+<a href="/accounts/logout/">Logout</a>
+
+<p>Logged in as {{ user.email }}</p>
+<p>Your role: {{ role }}</p>
+
+{% if role == "student" or role == "exec" %}
+<button>Create Review</button>
+{% endif %}
+
+{% if role == "exec" %}
+<button>Manage CIO Page</button>
+{% endif %}
+
+{% if role == "guest" %}
+<p>Guests can browse CIOs but cannot leave reviews.</p>
+{% endif %}
+
 {% else %}
-    <a href="/accounts/google/login/">Sign in with Google</a>
+
+<a href="/accounts/google/login/">Sign in with Google</a>
+
 {% endif %}
 
 </body>
