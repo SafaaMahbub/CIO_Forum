@@ -1,62 +1,36 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>CS3240 Project</title>
-    <style>
-
-        body{
-            font-family: "PT Sans";
-            background-color:#C4D8E2;
-            margin: 0;
-        }
-
-        h1{
-            font-size: 25px;
-            text-align: center;
-        }
-
-        nav{
-            background-color: #4682B4;
-            color: white;
-            overflow: hidden;
-            padding: 10px;
-        }
-        nav a {
-            color: white;
-            text-align: center;
-            font-weight: bold;
-            padding: 10px;
-        }
-
-        nav a:hover{
-            background-color: chocolate;
-        }
-
-        nav a.active{
-            background-color: aqua;
-            color: white;
-        }
-        .info{
-            text-align: center;
-            padding: 30px;
-        }
-    </style>
 </head>
+
 <body>
 
-
+<h1>Django is running on Heroku 🚀</h1>
 
 {% if user.is_authenticated %}
-<nav>
-    <a href="/">Home</a>
-    <a href="/accounts/logout/">Logout</a>
-    <a href="/profile/">Profile</a>
-</nav>
-    <p>Welcome {{ user.email }}</p>
+
+<p>Welcome {{ user.email }}</p>
+<a href="/accounts/logout/">Logout</a>
+
+<p>Logged in as {{ user.email }}</p>
+<p>Your role: {{ role }}</p>
+
+{% if role == "student" or role == "exec" %}
+<button>Create Review</button>
+{% endif %}
+
+{% if role == "exec" %}
+<button>Manage CIO Page</button>
+{% endif %}
+
+{% if role == "guest" %}
+<p>Guests can browse CIOs but cannot leave reviews.</p>
+{% endif %}
 
 {% else %}
-    <h1>Django is running on Heroku 🚀</h1>
-    <a href="/accounts/google/login/">Sign in with Google</a>
+
+<a href="/accounts/google/login/">Sign in with Google</a>
+
 {% endif %}
 
 </body>
