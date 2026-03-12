@@ -11,9 +11,10 @@
 
 <p>Welcome {{ user.email }}</p>
 <a href="/accounts/logout/">Logout</a>
+    
+<p>Logged in as {{ display_name }}</p>
+<p>Your role: {{ role|default:"No role assigned yet" }}</p>
 
-<p>Logged in as {{ user.email }}</p>
-<p>Your role: {{ role }}</p>
 
 {% if role == "student" or role == "exec" %}
 <button>Create Review</button>
