@@ -57,8 +57,8 @@
             <a href="/accounts/logout/">Logout</a>
         </nav>
 
-        <p>Logged in as {{ user.email }}</p>
-        <p>Your role: {{ user.profile.role }}</p>
+        <p>Logged in as {{ display_name }}</p>
+        <p>Your role: {{ role|default:"No role assigned yet" }}</p>
 
         {% if role == "student" or role == "exec" %}
             <button>Create Review</button>
