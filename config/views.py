@@ -15,3 +15,5 @@ def homepage(request):
         "role": role,
         "display_name": display_name,
     })
+def profile(request):
+    return render(request, "Profile.html")
