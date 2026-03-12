@@ -150,6 +150,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
+# Try to fix sign up error by explicitly removing email verification
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
 #request email from google profile
 #https://docs.allauth.org/en/dev/socialaccount/provider_configuration.html
 SOCIALACCOUNT_PROVIDERS = {
