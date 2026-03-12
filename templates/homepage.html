@@ -13,7 +13,7 @@
 <a href="/accounts/logout/">Logout</a>
     
 <p>Logged in as {{ display_name }}</p>
-<p>Your role: {{ role|default:"No role assigned yet" }}</p>
+<p>Your role: {{ role|default:"No role assigned yet." }}</p>
 
 
 {% if role == "student" or role == "exec" %}
