@@ -149,3 +149,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # allauth settings
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+#request email from google profile
+#https://docs.allauth.org/en/dev/socialaccount/provider_configuration.html
+SOCIALACCOUNT_PROVIDERS = {
+    'google':{
+        'SCOPE':['profile','email']
+    }
+}

@@ -13,6 +13,7 @@
         h1{
             font-size: 25px;
             text-align: center;
+            padding-top: 10px;
         }
 
         nav{
@@ -38,7 +39,6 @@
         }
         .info{
             text-align: center;
-            padding: 30px;
         }
 
     </style>
@@ -46,13 +46,15 @@
 <body >
 <nav>
     <a href="/">Home</a>
-    <a href="/accounts/logout/">Logout</a>
     <a href="/profile/">Profile</a>
+    <a href="">View Ratings</a>
+    <a href="/accounts/logout/">Logout</a>
 </nav>
-<h1>Welcome {{user.email}}</h1>
+<h1>Personal infomation:</h1>
 <div class="info">
-<p>Email: {{user.email}}</p>
-<p>Role: {{user.role}}</p>
+    <p>Name: {{user.first_name}} {{user.last_name}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>Role: {{user.profile.role}}</p>
 </div>
 
 </body>
