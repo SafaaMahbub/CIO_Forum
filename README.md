@@ -19,6 +19,16 @@ Verify Python
 py -3.12 --version
 ```
 
+## Environment Variables
+
+Before running the server, create a `.env` file in the project root and
+add your Google OAuth credentials:
+
+``` env
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
 ------------------------------------------------------------------------
 
 # CS3240 Project -- Quick Start
@@ -74,16 +84,6 @@ python manage.py migrate
 
 Applies database migrations to create the necessary database tables for
 the Django application.
-
-## Environment Variables
-
-Before running the server, create a `.env` file in the project root and
-add your Google OAuth credentials:
-
-``` env
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-```
 
 ## Run the Development Server
 
