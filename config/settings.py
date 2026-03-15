@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,7 +160,12 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 #request email from google profile
 #https://docs.allauth.org/en/dev/socialaccount/provider_configuration.html
 SOCIALACCOUNT_PROVIDERS = {
-    'google':{
-        'SCOPE':['profile','email']
+    "google": {
+        "APP": {
+            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+            "secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+            "key": "",
+        },
+        "SCOPE": ["profile", "email"],
     }
 }
