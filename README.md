@@ -21,16 +21,78 @@ py -3.12 --version
 
 ------------------------------------------------------------------------
 
-## Quick Start
+# CS3240 Project -- Quick Start
+
+## Clone the Repository
 
 ``` powershell
-git clone httpsgithub.comuva-cs3240-s26project-a-13.git
+git clone https://github.com/uva-cs3240-s26/project-a-13.git
+```
+
+Clones the project repository from GitHub to your local machine.
+
+## Enter the Project Folder
+
+``` powershell
 cd project-a-13
+```
+
+Moves into the project directory so all following commands run in the
+correct location.
+
+## Create a Virtual Environment
+
+``` powershell
 py -3.12 -m venv .venv
-..venvScriptsActivate.ps1
+```
+
+Creates a Python 3.12 virtual environment named `.venv` to isolate
+project dependencies.
+
+## Activate the Virtual Environment
+
+``` powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Activates the virtual environment so Python and pip use the project's
+environment.
+
+## Install Dependencies
+
+``` powershell
 pip install -r requirements.txt
+```
+
+Installs all required Python packages listed in `requirements.txt`.
+
+## Apply Database Migrations
+
+``` powershell
+python manage.py migrate
+```
+
+Applies database migrations to create the necessary database tables for
+the Django application.
+
+## Environment Variables
+
+Before running the server, create a `.env` file in the project root and
+add your Google OAuth credentials:
+
+``` env
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+## Run the Development Server
+
+``` powershell
 python manage.py runserver
 ```
+
+Starts the Django development server so you can access the application
+locally in your browser.
 
 ------------------------------------------------------------------------
 
