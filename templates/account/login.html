@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="form-box">
+
+    <h2>Sign In</h2>
+
+    {{ form.non_field_errors }}
+
+    <form method="post" action="{% url 'account_login' %}">
+        {% csrf_token %}
+
+        <!-- Username -->
+        <div class="form-group">
+            {{ form.login.label_tag }}
+            {{ form.login }}
+            {{ form.login.errors }}
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {{ form.password.errors }}
+        </div>
+
+        <!-- Remember me -->
+        {% if form.remember %}
+        <div class="remember-me">
+            {{ form.remember }}
+            {{ form.remember.label_tag }}
+        </div>
+        {% endif %}
+
+        <!-- Sign up sentence -->
+        <div class="signup-line">
+            Don't have an account? <a href="{% url 'account_signup' %}">Sign up here</a>.
+        </div>
+
+        <div class="auth-links">
+            <a href="{% url 'account_reset_password' %}">Forgot your password?</a>
+        </div>
+
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+        {% endif %}
+
+        <div class="center-text">
+            <button type="submit">Sign In</button>
+        </div>
+    </form>
+
+    <div class="center-text">
+        <a class="google-btn" href="{% provider_login_url 'google' %}">
+            Sign in with Google
+        </a>
+    </div>
+
+</div>
+{% endblock %}

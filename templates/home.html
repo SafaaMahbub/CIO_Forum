@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+    <div class="info">
+        {% if user.is_authenticated %}
+            <h1>Welcome to CS3240 Project</h1>
+
+            <p>Logged in as {{ display_name|default:user.username }}</p>
+            <p>Your role: {{ role|default:"No role assigned yet" }}</p>
+
+            {% if role == "student" or role == "exec" %}
+                <button type="button">Create Review</button>
+            {% endif %}
+
+            {% if role == "exec" %}
+                <button type="button">Manage CIO Page</button>
+            {% endif %}
+
+            {% if role == "guest" %}
+                <p>Guests can browse CIOs but cannot leave reviews.</p>
+            {% endif %}
+
+        {% else %}
+            <h1>Django is running on Heroku 🚀</h1>
+
+            <div class="center-text">
+                <a class="main-btn" href="/accounts/login/">Normal Login</a>
+            </div>
+
+            <div class="center-text">
+                <a class="google-btn" href="{% provider_login_url 'google' %}">
+                    Sign in with Google
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

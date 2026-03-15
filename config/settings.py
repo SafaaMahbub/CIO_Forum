@@ -150,7 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # allauth settings
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/profile"
 LOGOUT_REDIRECT_URL = "/"
 
 # Try to fix sign up error by explicitly removing email verification

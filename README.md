@@ -34,25 +34,3 @@ python manage.py runserver
 
 ------------------------------------------------------------------------
 
-## Verify installation
-
-``` powershell
-python -m django --version
-```
-
-Expected
-
-    4.2.27
-
-You can also verify the virtual environment
-
-
-
-Both paths should point to `.venvScripts`.
-
-------------------------------------------------------------------------
-
-## 6. Run the Django development server
-
-``` powershell
-python manage.py runserver
