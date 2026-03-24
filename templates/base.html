@@ -29,7 +29,7 @@
 <div class="messages">
     <ul>
         {% for message in messages %}
-        <li>{{ message }}</li>
+        <li class="alert {{ message.tags }}">{{ message }}</li>
         {% endfor %}
     </ul>
 </div>
@@ -38,5 +38,6 @@
 {% block content %}
 {% endblock %}
 
+<script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>
