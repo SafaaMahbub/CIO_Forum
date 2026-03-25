@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-from core.views import homepage, profile, create_cio
+from core.views import homepage, profile, create_cio, create_review
 
 urlpatterns = [
     path("", homepage, name="homepage"),
@@ -25,4 +25,6 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path('profile/', profile, name="profile"),
     path("create-cio/", create_cio, name="create_cio"),
+
+    path("create-review/",create_review,name="create_review"),
 ]

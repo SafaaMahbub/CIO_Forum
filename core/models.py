@@ -56,7 +56,17 @@ class Profile(models.Model):
     # This makes it much easier to see which user a profile belongs to.
     def __str__(self):
         return f"{self.user.email} - {self.role}"
-    
+
+class Review(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    cio = models.ForeignKey(CIO, on_delete=models.CASCADE)
+    comment = models.TextField(blank=True)
+    def __str__(self):
+        return f"{self.profile.user.username} - {self.cio.name}"
+
+    class Meta:
+        unique_together = ("profile", "cio")
+
 class CIOMembership(models.Model):
     profile = models.ForeignKey(
         Profile,
