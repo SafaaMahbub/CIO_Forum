@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import CIO, Profile, CIOMembership, Review
-
+from .models import CIO, Profile, CIOMembership
 
 
 class CIOMembershipInline(admin.TabularInline):
@@ -32,8 +31,3 @@ class CIOMembershipAdmin(admin.ModelAdmin):
     list_display = ("profile", "cio", "is_active")
     list_filter = ("is_active", "cio")
     search_fields = ("profile__user__username", "profile__user__email", "cio__name")
-
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("profile","cio","comment")
-    search_fields = ("profile__user__username", "cio__name", "comment")

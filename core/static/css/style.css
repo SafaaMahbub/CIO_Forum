@@ -317,9 +317,3 @@ button:hover {
 .value {
     flex: 1;
 }
-
-.form-field{
-    justify-content: center;
-    margin-bottom: 15px;
-    display: block;
-}
