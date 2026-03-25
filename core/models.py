@@ -1,6 +1,8 @@
 # Import Django settings to reference the built-in User model
 from django.conf import settings
 
+
+
 # Import Django's model system (used to create database tables)
 from django.db import models
 
@@ -22,6 +24,24 @@ class CIO(models.Model):
     def inactive_members(self):
         return self.memberships.filter(is_active=False).count()
 
+
+
+
+#Uploading  images and files
+# cio: links the file to a CIO
+# uploaded_by: stores who uploaded it
+# title: lets you name the file
+# file: stores the actual uploaded file
+# uploaded_at: timestamp
+class UploadedFile(models.Model):
+    cio = models.ForeignKey("CIO", on_delete=models.CASCADE, related_name="uploads")
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    file = models.FileField(upload_to="cio_uploads/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 
 # Create a Profile model using Django User model
 # Allows us to attach roles to users

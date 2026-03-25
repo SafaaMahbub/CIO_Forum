@@ -35,4 +35,16 @@
             </div>
         {% endif %}
     </div>
+    <h2>Uploaded Files</h2>
+<ul>
+    {% for file in uploads %}
+        <li>
+            <a href="{{ file.file.url }}">{{ file.title }}</a>
+            uploaded by {{ file.uploaded_by.username }}
+        </li>
+    {% empty %}
+        <li>No files uploaded yet.</li>
+    {% endfor %}
+</ul>
 {% endblock %}
+
