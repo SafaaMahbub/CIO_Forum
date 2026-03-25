@@ -14,6 +14,7 @@ def homepage(request):
     role = None
     display_name = None
     uploads = UploadedFile.objects.all()
+    cios = CIO.objects.all()
 
     if request.user.is_authenticated:
         display_name = request.user.email or request.user.username
@@ -25,6 +26,7 @@ def homepage(request):
         "role": role,
         "display_name": display_name,
         "uploads": uploads,
+        "cios": cios,
     })
 @login_required
 def profile(request):

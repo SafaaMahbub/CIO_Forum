@@ -8,9 +8,15 @@
 
             <p>Logged in as {{ display_name|default:user.username }}</p>
             <p>Your role: {{ role|default:"No role assigned yet" }}</p>
-
+            
             {% if role == "student" or role == "exec" %}
                 <button type="button">Create Review</button>
+
+                <br><br>
+
+                <a href="/cio/1/upload/">
+                <button type="button">Upload File</button>
+                </a>
             {% endif %}
 
             {% if role == "exec" %}
@@ -44,6 +50,32 @@
         </li>
     {% empty %}
         <li>No files uploaded yet.</li>
+    {% endfor %}
+</ul>
+    
+<h2>CIOs</h2>
+<ul>
+    {% for cio in cios %}
+        <li>
+            <strong>{{ cio.name }}</strong>
+
+            {% if role == "student" or role == "exec" %}
+                <a href="{% url 'upload_file' cio.id %}">Upload File</a>
+            {% endif %}
+
+            <ul>
+                {% for file in cio.uploads.all %}
+                    <li>
+                        <a href="{{ file.file.url }}">{{ file.title }}</a>
+                        uploaded by {{ file.uploaded_by.username }}
+                    </li>
+                {% empty %}
+                    <li>No files uploaded for this CIO yet.</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% empty %}
+        <li>No CIOs available.</li>
     {% endfor %}
 </ul>
 {% endblock %}
