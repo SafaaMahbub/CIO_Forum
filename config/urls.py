@@ -17,10 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-from core.views import upload_file
 from core.views import homepage, profile, create_cio
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path("", homepage, name="homepage"),
@@ -28,6 +25,4 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path('profile/', profile, name="profile"),
     path("create-cio/", create_cio, name="create_cio"),
-    path("cio/<int:cio_id>/upload/", upload_file, name="upload_file"),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
