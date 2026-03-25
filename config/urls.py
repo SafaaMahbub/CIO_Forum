@@ -21,6 +21,7 @@ from core.views import upload_file
 from core.views import homepage, profile, create_cio
 from django.conf import settings
 from django.conf.urls.static import static
+from core.views import homepage, profile, create_cio, create_review
 
 urlpatterns = [
     path("", homepage, name="homepage"),
@@ -29,5 +30,6 @@ urlpatterns = [
     path('profile/', profile, name="profile"),
     path("create-cio/", create_cio, name="create_cio"),
     path("cio/<int:cio_id>/upload/", upload_file, name="upload_file"),
+    path("create-review/",create_review,name="create_review"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

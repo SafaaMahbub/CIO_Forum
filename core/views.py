@@ -8,7 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .models import CIO, UploadedFile
 from .forms import UploadedFileForm
-
+from .models import CIOMembership, CIO, Review
+from .forms import ReviewForm
+from django.http import HttpResponseRedirect
 
 def homepage(request):
     role = None
@@ -79,3 +81,28 @@ def upload_file(request, cio_id):
         form = UploadedFileForm()
 
     return render(request, "upload_file.html", {"form": form, "cio": cio})
+def create_review(request):
+    profile =request.user.profile
+    if profile.role not in ["student", "exec"]:
+        messages.error(request, "You do not have permission to create a review for a CIO.")
+        return redirect("profile")
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+
+            #this checks if the current user submitted a review for the cio - if they already submitted
+            #a ,the page will display an error message will appear
+            if Review.objects.filter(profile=profile,cio=form.cleaned_data["cio"]).exists():
+                messages.error(request, "Review already exists. Please choose a different CIO from the list.")
+                return redirect("create_review")
+
+            Review.objects.create(
+                profile=request.user.profile,
+                cio=form.cleaned_data["cio"],
+                comment=form.cleaned_data["comment"]
+            )
+            messages.success(request, "Review has been created successfully.")
+            return redirect("profile")
+    else:
+        form = ReviewForm()
+    return render(request, "create_review.html", {"form": form})
