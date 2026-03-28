@@ -9,6 +9,21 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from django.utils.text import slugify
+from django.utils import timezone
+
+
+def ordered_user_pair(user_a, user_b):
+    """Return (lower_pk_user, higher_pk_user) for a stable 1:1 conversation key."""
+    if user_a.pk == user_b.pk:
+        raise ValueError("Cannot create a conversation with the same user twice.")
+    return (user_a, user_b) if user_a.pk < user_b.pk else (user_b, user_a)
+
+
+def get_or_create_conversation(user_a, user_b):
+    u1, u2 = ordered_user_pair(user_a, user_b)
+    conv, _created = Conversation.objects.get_or_create(user1=u1, user2=u2)
+    return conv
+
 
 def cio_upload_path(instance, filename):
     cio = instance.cio
@@ -117,3 +132,65 @@ class CIOMembership(models.Model):
         if self.profile.role == "guest":
             raise ValueError("Guest users cannot join CIOs.")
         super().save(*args, **kwargs)
+
+
+class Conversation(models.Model):
+    """One DM thread between two users. user1_id is always less than user2_id."""
+
+    user1 = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="dm_conversations_as_user1",
+    )
+    user2 = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="dm_conversations_as_user2",
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user1", "user2"], name="unique_dm_user_pair"),
+            models.CheckConstraint(
+                check=models.Q(user1_id__lt=models.F("user2_id")),
+                name="dm_user_order",
+            ),
+        ]
+
+    def __str__(self):
+        return f"DM {self.user1_id} ↔ {self.user2_id}"
+
+    def other_participant(self, user):
+        if user.pk == self.user1_id:
+            return self.user2
+        if user.pk == self.user2_id:
+            return self.user1
+        raise ValueError("User is not a participant in this conversation.")
+
+
+class Message(models.Model):
+    conversation = models.ForeignKey(
+        Conversation,
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="sent_dm_messages",
+    )
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.sender_id}: {self.body[:40]}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        Conversation.objects.filter(pk=self.conversation_id).update(
+            updated_at=timezone.now()
+        )

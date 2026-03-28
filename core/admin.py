@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CIO, Profile, CIOMembership, Review
+from .models import CIO, Profile, CIOMembership, Review, Conversation, Message
 
 
 
@@ -37,3 +37,15 @@ class CIOMembershipAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ("profile","cio","comment")
     search_fields = ("profile__user__username", "cio__name", "comment")
+
+
+@admin.register(Conversation)
+class ConversationAdmin(admin.ModelAdmin):
+    list_display = ("id", "user1", "user2", "updated_at")
+    search_fields = ("user1__username", "user2__username")
+
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ("id", "conversation", "sender", "created_at")
+    search_fields = ("body", "sender__username")

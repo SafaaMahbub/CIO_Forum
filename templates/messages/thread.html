@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ other.username }} · CIO Rating System{% endblock %}
+
+{% block content %}
+<div class="form-box dm-thread-page">
+    <p><a href="{% url 'messages_inbox' %}">← Back to inbox</a></p>
+    <h2>{{ other.username }}</h2>
+
+    <div class="dm-thread">
+        {% for m in message_list %}
+        <div class="dm-bubble {% if m.sender_id == user.id %}dm-bubble-mine{% else %}dm-bubble-theirs{% endif %}">
+            <div class="dm-meta">{{ m.sender.username }} · {{ m.created_at }}</div>
+            <div class="dm-body">{{ m.body|linebreaksbr }}</div>
+        </div>
+        {% empty %}
+        <p>No messages yet — say hello below.</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="dm-compose">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="main-btn">Send</button>
+    </form>
+</div>
+{% endblock %}

@@ -5,6 +5,21 @@ from .models import UploadedFile
 from .models import CIO, Review
 
 
+class StartDmForm(forms.Form):
+    recipient_username = forms.CharField(
+        max_length=150,
+        label="Recipient username",
+        help_text="The other person's login username (they must have a @virginia.edu email).",
+    )
+
+
+class DmMessageForm(forms.Form):
+    body = forms.CharField(
+        label="",
+        widget=forms.Textarea(attrs={"rows": 4, "placeholder": "Write a message…", "class": "dm-input"}),
+    )
+
+
 class CIOForm(forms.ModelForm):
     class Meta:
         model = CIO

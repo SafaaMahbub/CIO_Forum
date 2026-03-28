@@ -16,12 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponse
-from core.views import upload_file
-from core.views import homepage, profile, create_cio
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import homepage, profile, create_cio, create_review
+
+from core.views import (
+    homepage,
+    profile,
+    create_cio,
+    create_review,
+    upload_file,
+    messages_inbox,
+    messages_thread,
+    messages_new,
+    messages_start_user,
+)
 
 urlpatterns = [
     path("", homepage, name="homepage"),
@@ -30,6 +38,14 @@ urlpatterns = [
     path('profile/', profile, name="profile"),
     path("create-cio/", create_cio, name="create_cio"),
     path("cio/<int:cio_id>/upload/", upload_file, name="upload_file"),
-    path("create-review/",create_review,name="create_review"),
+    path("create-review/", create_review, name="create_review"),
+    path("messages/", messages_inbox, name="messages_inbox"),
+    path("messages/new/", messages_new, name="messages_new"),
+    path(
+        "messages/start/<int:user_id>/",
+        messages_start_user,
+        name="messages_start_user",
+    ),
+    path("messages/<int:conversation_id>/", messages_thread, name="messages_thread"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

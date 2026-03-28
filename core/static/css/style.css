@@ -361,6 +361,81 @@ button:hover {
 }
 
 /* =====================================================
+   Direct messages (simple thread UI)
+===================================================== */
+.dm-inbox-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    text-align: left;
+}
+
+.dm-inbox-item {
+    margin-bottom: 12px;
+}
+
+.dm-inbox-item a {
+    color: #1f4f73;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.dm-inbox-item a:hover {
+    text-decoration: underline;
+}
+
+.dm-preview {
+    font-weight: normal;
+    color: #333;
+}
+
+.dm-thread-page .dm-thread {
+    display: flex;
+    flex-direction: column;
+    max-height: 50vh;
+    overflow-y: auto;
+    margin: 20px 0;
+    padding: 10px;
+    background: #eef5f8;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.dm-bubble {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    max-width: 85%;
+}
+
+.dm-bubble-mine {
+    margin-left: auto;
+    background: #4682B4;
+    color: white;
+}
+
+.dm-bubble-theirs {
+    margin-right: auto;
+    background: white;
+    border: 1px solid #ccc;
+}
+
+.dm-meta {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+.dm-bubble-mine .dm-meta {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.dm-compose .dm-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* =====================================================
    Utility Class
    Hides elements while keeping them in the DOM
    (useful for JS-controlled visibility)

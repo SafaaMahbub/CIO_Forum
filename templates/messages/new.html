@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}New message · CIO Rating System{% endblock %}
+
+{% block content %}
+<div class="form-box">
+    <h2>New message</h2>
+    <p><a href="{% url 'messages_inbox' %}">← Back to inbox</a></p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="main-btn">Start conversation</button>
+    </form>
+</div>
+{% endblock %}

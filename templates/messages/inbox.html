@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Messages · CIO Rating System{% endblock %}
+
+{% block content %}
+<div class="form-box">
+    <h2>Messages</h2>
+    <p class="center-text"><a href="{% url 'messages_new' %}" class="main-btn">New message</a></p>
+
+    {% if rows %}
+    <ul class="dm-inbox-list">
+        {% for row in rows %}
+        <li class="dm-inbox-item">
+            <a href="{% url 'messages_thread' row.conversation.id %}">
+                <strong>{{ row.other.username }}</strong>
+                {% if row.last %}
+                <span class="dm-preview"> — {{ row.last.body|truncatechars:60 }}</span>
+                {% else %}
+                <span class="dm-preview"> — (no messages yet)</span>
+                {% endif %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="center-text">No conversations yet. Start one with “New message”.</p>
+    {% endif %}
+</div>
+{% endblock %}

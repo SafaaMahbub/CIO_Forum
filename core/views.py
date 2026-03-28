@@ -1,16 +1,45 @@
-from django.shortcuts import render, redirect
+from functools import wraps
+
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import CIOForm
-from .models import CIOMembership
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponseForbidden
-from .models import CIO, UploadedFile
-from .forms import UploadedFileForm
-from .models import CIOMembership, CIO, Review
-from .forms import ReviewForm
-from django.http import HttpResponseRedirect
+from django.contrib.auth.views import redirect_to_login
+
+from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm
+from .models import (
+    CIOMembership,
+    CIO,
+    Review,
+    UploadedFile,
+    Conversation,
+    Message,
+    get_or_create_conversation,
+)
+
+
+def _email_is_uva(user):
+    return (user.email or "").lower().endswith("@virginia.edu")
+
+
+def uva_dm_only(view_func):
+    """Logged-in users with @virginia.edu email only."""
+
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+        if not _email_is_uva(request.user):
+            messages.error(
+                request,
+                "Direct messaging is only available for @virginia.edu accounts.",
+            )
+            return redirect("homepage")
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped
 
 def homepage(request):
     role = None
@@ -106,3 +135,93 @@ def create_review(request):
     else:
         form = ReviewForm()
     return render(request, "create_review.html", {"form": form})
+
+
+@uva_dm_only
+def messages_inbox(request):
+    convs = (
+        Conversation.objects.filter(Q(user1=request.user) | Q(user2=request.user))
+        .order_by("-updated_at")
+    )
+    rows = []
+    for c in convs:
+        other = c.other_participant(request.user)
+        last = c.messages.order_by("-created_at").first()
+        rows.append({"conversation": c, "other": other, "last": last})
+    return render(request, "messages/inbox.html", {"rows": rows})
+
+
+@uva_dm_only
+def messages_thread(request, conversation_id):
+    conv = get_object_or_404(
+        Conversation.objects.filter(Q(user1=request.user) | Q(user2=request.user)),
+        pk=conversation_id,
+    )
+    other = conv.other_participant(request.user)
+    if request.method == "POST":
+        form = DmMessageForm(request.POST)
+        if form.is_valid():
+            body = form.cleaned_data["body"].strip()
+            if body:
+                Message.objects.create(
+                    conversation=conv,
+                    sender=request.user,
+                    body=body,
+                )
+            return redirect("messages_thread", conversation_id=conv.id)
+    else:
+        form = DmMessageForm()
+    msg_list = conv.messages.select_related("sender").all()
+    return render(
+        request,
+        "messages/thread.html",
+        {
+            "conversation": conv,
+            "other": other,
+            "message_list": msg_list,
+            "form": form,
+        },
+    )
+
+
+@uva_dm_only
+def messages_new(request):
+    if request.method == "POST":
+        form = StartDmForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["recipient_username"].strip()
+            try:
+                recipient = User.objects.get(username__iexact=username)
+            except User.DoesNotExist:
+                messages.error(request, "No user with that username.")
+                return render(request, "messages/new.html", {"form": form})
+            if recipient.pk == request.user.pk:
+                messages.error(request, "You cannot message yourself.")
+                return render(request, "messages/new.html", {"form": form})
+            if not _email_is_uva(recipient):
+                messages.error(
+                    request,
+                    "You can only message other users with a @virginia.edu email.",
+                )
+                return render(request, "messages/new.html", {"form": form})
+            conv = get_or_create_conversation(request.user, recipient)
+            return redirect("messages_thread", conversation_id=conv.id)
+    else:
+        form = StartDmForm()
+    return render(request, "messages/new.html", {"form": form})
+
+
+@uva_dm_only
+def messages_start_user(request, user_id):
+    recipient = get_object_or_404(User, pk=user_id)
+    if recipient.pk == request.user.pk:
+        messages.error(request, "You cannot message yourself.")
+        return redirect("messages_inbox")
+    if not _email_is_uva(recipient):
+        messages.error(
+            request,
+            "You can only message users with a @virginia.edu email.",
+        )
+        return redirect("messages_inbox")
+    conv = get_or_create_conversation(request.user, recipient)
+    return redirect("messages_thread", conversation_id=conv.id)
