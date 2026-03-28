@@ -10,13 +10,11 @@
             <p>Your role: {{ role|default:"No role assigned yet" }}</p>
             
             {% if role == "student" or role == "exec" %}
-                <button type="button">Create Review</button>
+                <a href="/create-review/" class="main-btn">Create Review</a>
 
                 <br><br>
 
-                <a href="/cio/1/upload/">
-                <button type="button">Upload File</button>
-                </a>
+                <a href="/cio/1/upload/" class="main-btn"> Test Upload File</a>
             {% endif %}
 
             {% if role == "exec" %}
@@ -60,7 +58,7 @@
             <strong>{{ cio.name }}</strong>
 
             {% if role == "student" or role == "exec" %}
-                <a href="{% url 'upload_file' cio.id %}">Upload File</a>
+                <a href="{% url 'upload_file' cio.id %}" class="main-btn">Upload File</a>
             {% endif %}
 
             <ul>
