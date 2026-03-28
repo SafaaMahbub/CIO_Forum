@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Email{% endblock %}
+
+{% block content %}
+<div class="form-box">
+    <h2>Email Addresses</h2>
+
+    {% if user.emailaddress_set.all %}
+    <form method="post" action="{% url 'account_email' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {% for emailaddress in user.emailaddress_set.all %}
+            <label style="display:block; margin-bottom:12px; text-align:left;">
+                <input type="radio" name="email" value="{{ emailaddress.email }}" {% if emailaddress.primary %}checked{% endif %}>
+                <strong>{{ emailaddress.email }}</strong>
+                {% if emailaddress.primary %}(Primary){% endif %}
+                {% if emailaddress.verified %}(Verified){% else %}(Unverified){% endif %}
+            </label>
+            {% endfor %}
+        </div>
+
+        <div class="center-text" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button type="submit" name="action_primary">Make Primary</button>
+            <button type="submit" name="action_send">Re-send Verification</button>
+            <button type="submit" name="action_remove">Remove Selected</button>
+        </div>
+    </form>
+    {% else %}
+        <p class="center-text">You do not have any email addresses configured yet.</p>
+    {% endif %}
+</div>
+
+<div class="form-box">
+    <h2>Add Email Address</h2>
+    <form method="post" action="{% url 'account_email' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+        <div class="center-text">
+            <button type="submit" name="action_add">Add Email</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

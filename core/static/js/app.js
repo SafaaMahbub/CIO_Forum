@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    setupNotifications();
+    setupLogout();
+});
+
+
+function setupNotifications() {
     const notification = document.querySelectorAll('.messages .alert');
     notification.forEach(alert => {
         setTimeout(() => {
@@ -15,4 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1000);
         }, 2500);
     });
-});
+}
+
+
+function setupLogout() {
+    const logoutLink = document.getElementById("logout-link");
+    const logoutForm = document.getElementById("logout-form");
+
+    if (!logoutLink || !logoutForm) return;
+
+    logoutLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        logoutForm.submit();
+    });
+}

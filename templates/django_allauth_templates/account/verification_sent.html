@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Verification Sent{% endblock %}
+
+{% block content %}
+<div class="form-box center-text">
+    <h2>Check Your Email</h2>
+    <p>We sent you a verification email. Please follow the link in that message to finish confirming your address.</p>
+    <div class="auth-links">
+        <a href="{% url 'account_login' %}">Return to Sign In</a>
+    </div>
+</div>
+{% endblock %}

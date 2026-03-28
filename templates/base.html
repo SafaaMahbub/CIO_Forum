@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CIO Rating System{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -13,20 +14,30 @@
 
 <nav>
     <a href="/">Home</a>
+    <a href="">View Ratings</a>
 
     {% if user.is_authenticated %}
         <a href="/profile/">Profile</a>
-        <a href="">View Ratings</a>
         {% if user.email|slice:"-13:" == "@virginia.edu"%}
             <a href="/create-cio/">Create CIO</a>
             <a href="/create-review/">Create Review</a>
         {%  endif %}
-        <a href="/accounts/logout/">Logout</a>
+        <!-- TODO# add manage email function if needed -->
+        <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
+        <a href="{% url 'account_change_password' %}">Change Password</a>
+        <a href="#" id="logout-link" class="nav-link">Logout</a>
     {% else %}
-        <a href="/accounts/login/">Sign In</a>
-        <a href="/accounts/signup/">Sign Up</a>
+        <a href="{% url 'account_login' %}">Sign In</a>
+        <a href="{% url 'account_signup' %}">Sign Up</a>
     {% endif %}
 </nav>
+
+<!-- makes logout a post request -->
+{% if user.is_authenticated %}
+<form id="logout-form" class="hidden" method="post" action="{% url 'account_logout' %}" style="display: none;">
+    {% csrf_token %}
+</form>
+{% endif %}
 
 {% if messages %}
 <div class="messages">

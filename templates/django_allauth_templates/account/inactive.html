@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Account Inactive{% endblock %}
+
+{% block content %}
+<div class="form-box center-text">
+    <h2>Account Inactive</h2>
+    <p>This account is currently inactive. Please contact support or try signing in with a different method.</p>
+    <div class="auth-links">
+        <a href="{% url 'account_login' %}">Back to Sign In</a>
+    </div>
+</div>
+{% endblock %}
