@@ -8,6 +8,12 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
+from django.utils.text import slugify
+
+def cio_upload_path(instance, filename):
+    cio = instance.cio
+    return f"cio_uploads/{cio.id}_{slugify(cio.name)}/{filename}"
+
 class CIO(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -37,7 +43,7 @@ class UploadedFile(models.Model):
     cio = models.ForeignKey("CIO", on_delete=models.CASCADE, related_name="uploads")
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    file = models.FileField(upload_to="cio_uploads/")
+    file = models.FileField(upload_to=cio_upload_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
