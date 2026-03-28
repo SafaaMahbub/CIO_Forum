@@ -169,26 +169,61 @@ button:hover {
    Used for Django messages (errors, success alerts)
 ===================================================== */
 .messages {
-    max-width: 700px;
-    margin: 20px auto 0 auto;
-    padding: 0 20px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+
+    width: 400px;
+    max-width: calc(100vw - 40px);
+
+    margin: 0;
+    padding: 0;
 }
 
-
-/* Message container styling */
 .messages ul {
-    background: white;
-    border-radius: 6px;
-    padding: 15px 30px;
+    list-style: none;
+    padding: 0;
     margin: 0;
 }
 
-
-/* Individual message spacing */
 .messages li {
     margin-bottom: 8px;
+    list-style: none;
 }
 
+.messages li:last-child {
+    margin-bottom: 0;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
 
 /* =====================================================
    Authentication Links
