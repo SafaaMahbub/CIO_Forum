@@ -434,6 +434,19 @@ button:hover {
     width: 100%;
     box-sizing: border-box;
 }
+/* =====================================================
+   View All Reviews Page
+===================================================== */
+
+
+.review-block{
+    background-color: #CFECEC;
+    flex-direction: column;
+    margin: 15px;
+    padding-left: 15px;
+    border-radius: 2px;
+    border: 4px solid grey;
+}
 
 /* =====================================================
    Utility Class

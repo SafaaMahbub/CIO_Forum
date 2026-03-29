@@ -29,6 +29,7 @@ from core.views import (
     messages_thread,
     messages_new,
     messages_start_user,
+    viewAllReviews
 )
 
 urlpatterns = [
@@ -39,6 +40,7 @@ urlpatterns = [
     path("create-cio/", create_cio, name="create_cio"),
     path("cio/<int:cio_id>/upload/", upload_file, name="upload_file"),
     path("create-review/", create_review, name="create_review"),
+    path("view-all-reviews/",viewAllReviews, name = "viewAllReviews"),
     path("messages/", messages_inbox, name="messages_inbox"),
     path("messages/new/", messages_new, name="messages_new"),
     path(

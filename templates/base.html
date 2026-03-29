@@ -14,7 +14,7 @@
 
 <nav>
     <a href="/">Home</a>
-    <a href="">View Ratings</a>
+    <a href="/view-all-reviews/">View Ratings</a>
 
     {% if user.is_authenticated %}
         {% if user.email|slice:"-13:" == "@virginia.edu" %}

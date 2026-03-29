@@ -120,7 +120,7 @@ def create_review(request):
         if form.is_valid():
 
             #this checks if the current user submitted a review for the cio - if they already submitted
-            #a ,the page will display an error message will appear
+            #a review,the page will display an error message will appear
             if Review.objects.filter(profile=profile,cio=form.cleaned_data["cio"]).exists():
                 messages.error(request, "Review already exists. Please choose a different CIO from the list.")
                 return redirect("create_review")
@@ -131,7 +131,7 @@ def create_review(request):
                 comment=form.cleaned_data["comment"]
             )
             messages.success(request, "Review has been created successfully.")
-            return redirect("profile")
+            return redirect("viewAllReviews")
     else:
         form = ReviewForm()
     return render(request, "create_review.html", {"form": form})
@@ -225,3 +225,9 @@ def messages_start_user(request, user_id):
         return redirect("messages_inbox")
     conv = get_or_create_conversation(request.user, recipient)
     return redirect("messages_thread", conversation_id=conv.id)
+
+
+def viewAllReviews(request):
+    reviews = Review.objects.select_related("profile__user","cio").all()
+
+    return render(request, "view_all_reviews.html",{"reviews": reviews})

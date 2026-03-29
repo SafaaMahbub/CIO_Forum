@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>View All Reviews</h1>
+    {%  if reviews %}
+        {% for r in reviews %}
+            <div class="review-block">
+                <h3>{{ r.cio.name }}</h3>
+                <p>Created by: {{ r.profile.user.email }}</p>
+                <p>Comment: {{ r.comment }}</p>
+            </div>
+        {% endfor %}
+    {%  else %}
+        <p>No reviews yet!</p>
+    {% endif %}
+
+{%  endblock %}
