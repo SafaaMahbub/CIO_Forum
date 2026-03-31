@@ -110,6 +110,11 @@ def upload_file(request, cio_id):
         form = UploadedFileForm()
 
     return render(request, "upload_file.html", {"form": form, "cio": cio})
+
+def view_upload(request, id):
+    upload = UploadedThing.objects.get(id=id)
+    return render(request, "view_upload.html", {"upload": upload})
+
 def create_review(request):
     profile =request.user.profile
     if profile.role not in ["student", "exec"]:
