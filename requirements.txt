@@ -8,3 +8,5 @@ PyJWT==2.9.0
 cryptography==46.0.5
 python-dotenv==1.2.2
 dj-database-url
+django-storages==1.14.4
+boto3==1.34.70
