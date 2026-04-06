@@ -35,3 +35,41 @@ function setupLogout() {
         logoutForm.submit();
     });
 }
+
+const prevImg = document.getElementById('picPreview').src;
+function openFileExplorer(){
+    document.querySelector('input[type="file"]').click();
+}
+
+//citation edit
+document.querySelector('input[type="file"]').onchange = function (){
+    const newImage = this.files[0];
+    let preview = document.getElementById('picPreview');
+    if(newImage){
+        const reader = new FileReader();
+        reader.onload = function(e)
+        {
+            preview.src = e.target.result;
+
+            document.querySelector('editButton').style.display='none';
+            document.querySelector('actionBtns').style.display='block';
+        };
+        reader.readAsDataURL(newImage);
+    }
+
+
+
+}
+
+
+function cancelUploadOperation(){
+    let fileSrc = document.querySelector('input[type="file"]').value="";
+
+
+
+    document.getElementById('picPreview').src = prevImg;
+
+    document.querySelector('editButton').style.display='block';
+    document.querySelector('actionBtns').style.display='none';
+
+}
