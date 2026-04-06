@@ -456,3 +456,18 @@ button:hover {
 .hidden {
     display: none;
 }
+
+/* =====================================================
+   profile image
+===================================================== */
+
+.profilePic{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.profilePicContainer{
+    text-align: center;
+    justify-content: center;
+}

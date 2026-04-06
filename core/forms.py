@@ -2,7 +2,8 @@ from django import forms
 from .models import CIO
 from .models import UploadedFile
 
-from .models import CIO, Review
+from .models import CIO, Review, Profile
+
 
 
 class StartDmForm(forms.Form):
@@ -33,3 +34,8 @@ class UploadedFileForm(forms.ModelForm):
 class ReviewForm(forms.Form):
     cio = forms.ModelChoiceField(queryset=CIO.objects.all(), label="Select a CIO")
     comment = forms.CharField(widget=forms.Textarea(), label="Add a comment")
+
+class profileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['profile_picture']

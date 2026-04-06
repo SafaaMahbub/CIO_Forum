@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.contrib.auth.views import redirect_to_login
 
-from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm
+from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm
 from .models import (
     CIOMembership,
     CIO,
@@ -61,8 +61,21 @@ def homepage(request):
     })
 @login_required
 def profile(request):
+    form = profileForm(instance=request.user.profile)
+    if request.method == "POST":
+        form = profileForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            if 'profile_picture' in request.FILES:
+                form.save()
+                messages.success(request, "Profile has been updated successfully.")
+            else:
+                messages.error(request, "Profile has not been updated successfully.")
+            return redirect("profile")
+        else:
+            messages.error(request, "Please try again")
+
     return render(request, "profile.html", {
-        "profile": request.user.profile
+        "profile": request.user.profile, "form": form
     })
 
 @login_required

@@ -2,9 +2,31 @@
 
 {% block content %}
 <div class="form-box">
+
+
     <h2>Personal Information</h2>
 
     <div class="profile-info">
+         <div class="row">
+                <div class="profilePicContainer">
+                    <img class="profilePic" src="{{ profile.profile_picture.url }}" alt="profile pic">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="hidden-fileUpload">
+                            {{ form.profile_picture }}
+                        </div>
+
+                        {% if form.profile_picture.errors %}
+                        <div class="error">{{ form.profile_picture.errors }}</div>
+                        {% endif %}
+
+                        <button type="submit" onclick="uploaFile">Edit Profile Picture</button>
+
+                         <button type="submit" onclick="uploaFile">Edit Profile Picture</button>
+                    </form>
+                </div>
+        </div>
+
         <div class="row">
             <span class="label">Name:</span>
             <span class="value">{{ user.username }}</span>

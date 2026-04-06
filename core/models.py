@@ -93,6 +93,8 @@ class Profile(models.Model):
         blank=True
     )
 
+    profile_picture = models.ImageField(upload_to="profile_pictures", default="profile_pictures/defaultPic.jpg")
+
     # Example output: john@virginia.edu - student
     # This makes it much easier to see which user a profile belongs to.
     def __str__(self):
