@@ -23,9 +23,9 @@
                             <div class="error">{{ form.profile_picture.errors }}</div>
                         {% endif %}
 
-                        <button type="submit" id ="editBtn" class="editButton" onclick="openFileExplorer()">Edit Profile Picture</button>
+                        <button type="button" id ="editBtn" class="editButton" onclick="openFileExplorer()">Edit Profile Picture</button>
                         <div id ="actionBtns" class="actionButton" style="display: none">
-                            <button type="submit" id = "cancelBtn" class="cancelButton" onclick="cancelUploadOperation()">Cancel</button>
+                            <button type="button" id = "cancelBtn" class="cancelButton" onclick="cancelUploadOperation()">Cancel</button>
                             <button type="submit" id = "saveBtn" class="saveButton" onclick="savePicture()">Save</button>
                         </div>
                     </form>

@@ -1,6 +1,13 @@
+let prevImg;
 document.addEventListener('DOMContentLoaded', () => {
     setupNotifications();
     setupLogout();
+
+    const picPreview = document.getElementById('picPreview');
+    if(picPreview) prevImg = picPreview.src;
+
+    const fileInput = document.querySelector('input[type="file"]')
+    if(fileInput) fileInput.onchange = handleFile;
 });
 
 
@@ -36,13 +43,11 @@ function setupLogout() {
     });
 }
 
-const prevImg = document.getElementById('picPreview').src;
 function openFileExplorer(){
     document.querySelector('input[type="file"]').click();
 }
-
 //citation edit
-document.querySelector('input[type="file"]').onchange = function (){
+function handleFile (){
     const newImage = this.files[0];
     let preview = document.getElementById('picPreview');
     if(newImage){
@@ -51,25 +56,18 @@ document.querySelector('input[type="file"]').onchange = function (){
         {
             preview.src = e.target.result;
 
-            document.querySelector('editButton').style.display='none';
-            document.querySelector('actionBtns').style.display='block';
+            document.getElementById('editBtn').style.display='none';
+            document.getElementById('actionBtns').style.display='block';
         };
         reader.readAsDataURL(newImage);
     }
-
-
-
 }
 
 
 function cancelUploadOperation(){
-    let fileSrc = document.querySelector('input[type="file"]').value="";
-
-
-
+    document.querySelector('input[type="file"]').value="";
     document.getElementById('picPreview').src = prevImg;
-
-    document.querySelector('editButton').style.display='block';
-    document.querySelector('actionBtns').style.display='none';
+    document.getElementById('editBtn').style.display='block';
+    document.getElementById('actionBtns').style.display='none';
 
 }
