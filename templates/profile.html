@@ -72,13 +72,13 @@
         </div>
     </div>
 
-    {% if profile.role == "student" %}
+    {% comment %}{% if profile.role == "student" %}
     <div class="center-text">
         <a href="{% url 'create_cio' %}">
             <button type="button">Create a CIO</button>
         </a>
     </div>
-    {% endif %}
+    {% endif %}{% endcomment %}
 </div>
 
 <script src="{% static 'js/app.js' %}"></script>

@@ -9,30 +9,41 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 <body>
 
 <nav>
-    <a href="/">Home</a>
-    <a href="/view-all-reviews/">View Ratings</a>
-
     {% if user.is_authenticated %}
         {% if user.email|slice:"-13:" == "@virginia.edu" %}
-            <a href="{% url 'messages_inbox' %}">Messages</a>
-        {% endif %}
-        <a href="/profile/">Profile</a>
-        {% if user.email|slice:"-13:" == "@virginia.edu"%}
-            <a href="/create-cio/">Create CIO</a>
-            <a href="/create-review/">Create Review</a>
-        {%  endif %}
+            <div class="nav-left">
+            <ul class="navLinks">
+                <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
+                <li><a href="/create-cio/">Create CIO</a></li>
+                <li><a href="/create-review/">Create Review</a></li>
+            </ul>
+            </div>
+    {%  endif %}
+
         <!-- TODO# add manage email function if needed -->
         <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
-        <a href="{% url 'account_change_password' %}">Change Password</a>
-        <a href="#" id="logout-link" class="nav-link">Logout</a>
+
+
+        <ul class="navLinks">
+            <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
+            <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
+            <li><a href="/profile/">Profile</a></li>
+        </ul>
     {% else %}
-        <a href="{% url 'account_login' %}">Sign In</a>
-        <a href="{% url 'account_signup' %}">Sign Up</a>
+        <ul class="navLinks">
+            <div class="nav-left" >
+                <a href="#">logo</a>
+                <a href="/">Explore</a>
+                <a href="/view-all-reviews/">View Ratings</a>
+            </div>
+            <li><a href="{% url 'account_login' %}">Sign In</a></li>
+            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+        </ul>
     {% endif %}
+
 </nav>
 
 <!-- makes logout a post request -->

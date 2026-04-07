@@ -24,6 +24,9 @@ h1, h2 {
    Top navigation menu styling
 ===================================================== */
 nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #4682B4;
     color: white;
     overflow: hidden;
@@ -45,7 +48,16 @@ nav a {
     border-radius: 8px;
 }
 
+.navLinks{
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
+.nav-left{
+    display: flex;
+}
 /* =====================================================
    Navigation Hover Effect
    Changes background when hovering over links
