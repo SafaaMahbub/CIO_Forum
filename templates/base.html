@@ -12,60 +12,68 @@
 <body>
 
 <nav>
-    {% if user.is_authenticated %}
-        {% if user.email|slice:"-13:" == "@virginia.edu" %}
-            <div class="nav-left">
-            <ul class="navLinks">
-                <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
-                <li><a href="/create-cio/">Create CIO</a></li>
-                <li><a href="/create-review/">Create Review</a></li>
+    <div class="navLinks">
+            <ul>
+            <li><a href="#"><img src="{% static 'logo.png' %}" alt="logo" class="navLogo"></a></li>
+            <li><a href="/">Explore</a></li>
             </ul>
+    </div>
+    {% if user.is_authenticated %}
+        <div class="navLinks">
+            <ul>
+            <li><a href="/view-all-reviews/">View Ratings</a></li>
+            <li><a href="/view-all-cios/">View CIOs</a></li>
+            {% if user.email|slice:"-13:" == "@virginia.edu" %}
+                    <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
+                    <li><a href="/create-cio/">Create CIO</a></li>
+                    <li><a href="/create-review/">Create Review</a></li>
+            {%  endif %}
+            </ul>
+        </div>
+
+            <!-- TODO# add manage email function if needed -->
+            <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
+            <div  class="navLinks">
+                <ul>
+                    <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
+                    <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
+                    <li><a href="/profile/">
+                        <img src="{{ user.profile.profile_picture.url }}" alt="profilePicture" class="navPic">
+                    </a></li>
+                </ul>
             </div>
-    {%  endif %}
-
-        <!-- TODO# add manage email function if needed -->
-        <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
-
-
-        <ul class="navLinks">
-            <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
-            <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
-            <li><a href="/profile/">Profile</a></li>
-        </ul>
     {% else %}
-        <ul class="navLinks">
-            <div class="nav-left" >
-                <a href="#">logo</a>
-                <a href="/">Explore</a>
-                <a href="/view-all-reviews/">View Ratings</a>
-            </div>
-            <li><a href="{% url 'account_login' %}">Sign In</a></li>
-            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
-        </ul>
+
+        <div  class="navLinks">
+            <ul>
+                <li><a href="{% url 'account_login' %}" >Sign In</a></li>
+                <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+            </ul>
+        </div>
     {% endif %}
 
 </nav>
+<div class="main-container">
+    <!-- makes logout a post request -->
+    {% if user.is_authenticated %}
+    <form id="logout-form" class="hidden" method="post" action="{% url 'account_logout' %}" style="display: none;">
+        {% csrf_token %}
+    </form>
+    {% endif %}
 
-<!-- makes logout a post request -->
-{% if user.is_authenticated %}
-<form id="logout-form" class="hidden" method="post" action="{% url 'account_logout' %}" style="display: none;">
-    {% csrf_token %}
-</form>
-{% endif %}
+    {% if messages %}
+    <div class="messages">
+        <ul>
+            {% for message in messages %}
+            <li class="alert {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 
-{% if messages %}
-<div class="messages">
-    <ul>
-        {% for message in messages %}
-        <li class="alert {{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
+    {% block content %}
+    {% endblock %}
 </div>
-{% endif %}
-
-{% block content %}
-{% endblock %}
-
 <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>

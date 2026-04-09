@@ -46,7 +46,11 @@ function setupLogout() {
 function openFileExplorer(){
     document.querySelector('input[type="file"]').click();
 }
-//citation edit
+/*AI citation
+//Generated with ChatGPT free version on 04/06/2026
+Prompt summary: Requested assistance in how  the edit button to  open the file explorer and display the action buttons
+//Purpose: to handle profile upload based on which button is clicked
+*/
 function handleFile (){
     const newImage = this.files[0];
     let preview = document.getElementById('picPreview');

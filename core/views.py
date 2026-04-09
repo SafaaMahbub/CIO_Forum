@@ -44,21 +44,21 @@ def uva_dm_only(view_func):
 def homepage(request):
     role = None
     display_name = None
-    uploads = UploadedFile.objects.all()
-    cios = CIO.objects.all()
+    #uploads = UploadedFile.objects.all()
+    #cios = CIO.objects.all()
 
-    if request.user.is_authenticated:
-        display_name = request.user.email or request.user.username
+    #if request.user.is_authenticated:
+     #   display_name = request.user.email or request.user.username
 
-        if hasattr(request.user, "profile"):
-            role = request.user.profile.role
+      #  if hasattr(request.user, "profile"):
+       #     role = request.user.profile.role
 
-    return render(request, "home.html", {
-        "role": role,
-        "display_name": display_name,
-        "uploads": uploads,
-        "cios": cios,
-    })
+    #return render(request, "home.html", {
+     #   "role": role,
+      #  "display_name": display_name,
+       # "uploads": uploads,
+        #"cios": cios,
+   # })
 @login_required
 def profile(request):
     form = profileForm(instance=request.user.profile)
@@ -118,7 +118,7 @@ def upload_file(request, cio_id):
             uploaded_file.cio = cio
             uploaded_file.uploaded_by = request.user
             uploaded_file.save()
-            return redirect("homepage")
+            return redirect("viewAllCios")
     else:
         form = UploadedFileForm()
 
@@ -249,3 +249,22 @@ def viewAllReviews(request):
     reviews = Review.objects.select_related("profile__user","cio").all()
 
     return render(request, "view_all_reviews.html",{"reviews": reviews})
+
+def viewAllCios(request):
+    role = None
+    display_name = None
+    uploads = UploadedFile.objects.all()
+    cios = CIO.objects.all()
+
+    if request.user.is_authenticated:
+        display_name = request.user.email or request.user.username
+
+        if hasattr(request.user, "profile"):
+            role = request.user.profile.role
+
+    return render(request, "view_all_cios.html", {
+        "role": role,
+        "display_name": display_name,
+        "uploads": uploads,
+        "cios": cios,
+    })

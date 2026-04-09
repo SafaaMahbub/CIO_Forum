@@ -32,7 +32,6 @@ def cio_upload_path(instance, filename):
 class CIO(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-
     def __str__(self):
         return self.name
 
