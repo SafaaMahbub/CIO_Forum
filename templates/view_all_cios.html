@@ -1,6 +1,26 @@
 {% extends "base.html" %}
 {% load socialaccount %}
 {% block content %}
+ <div class="info">
+        {% if user.is_authenticated %}
+
+            {% if role == "student" or role == "exec" %}
+                <a href="/create-review/" class="main-btn">Create Review</a>
+
+                <br><br>
+
+                <a href="/cio/1/upload/" class="main-btn"> Test Upload File</a>
+            {% endif %}
+
+            {% if role == "exec" %}
+                <button type="button">Manage CIO Page</button>
+            {% endif %}
+
+            {% if role == "guest" %}
+                <p>Guests can browse CIOs but cannot leave reviews.</p>
+            {% endif %}
+        {% endif %}
+    </div>
 
 
     <h2>Uploaded Files</h2>

@@ -8,7 +8,7 @@ body {
     citation: https://mycolor.space/gradient?ori=to+right+bottom&hex=%2388B4F5&hex2=%239B87F3&sub=1
     purpose: to generate a background gradient
     */
-    background-image: linear-gradient(to left top, #ffffff, #f0f1ff, #dde5ff, #cedef8, #a4d1ff);
+    background-image: linear-gradient(to left top, #cedef8, #a4d1ff, #dde5ff, #cedef8, #f0f1ff);
     overflow: auto;
     margin: 0;
     min-height: 100vh;
@@ -36,10 +36,11 @@ nav {
     justify-content: space-between;
     align-items: center;
     background-color: #b8d3e8;
-    color: #1e1f22;
+    color: black;
     overflow: hidden;
     border-radius: 8px;
     margin-bottom: 20px;
+    font-size: 19px;
 }
 
 .navLinks ul {
@@ -124,7 +125,7 @@ nav a.active {
 .main-btn,
 button {
     display: inline-block;
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 12px 20px;
     font-weight: bold;
     text-decoration: none;

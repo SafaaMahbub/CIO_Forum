@@ -8,6 +8,20 @@
 
             <p>Logged in as {{ display_name|default:user.username }}</p>
             <p>Your role: {{ role|default:"No role assigned yet" }}</p>
+            {%  comment %}
+        <!--{% else %}
+            <h1>Django is running on Heroku 🚀</h1>
+            <div class="center-text">
+                <a class="main-btn" href="{% url 'account_login' %}">Normal Login</a>
+            </div>
+
+            <div class="center-text">
+                <a class="google-btn" href="{% provider_login_url 'google' %}">
+                    Sign in with Google
+                </a>
+            </div>
+            {% endcomment %}
         {% endif %}
+    </div>
 {% endblock %}
 

@@ -42,8 +42,8 @@ def uva_dm_only(view_func):
     return _wrapped
 
 def homepage(request):
-    role = None
-    display_name = None
+    #role = None
+    #display_name = None
     #uploads = UploadedFile.objects.all()
     #cios = CIO.objects.all()
 
@@ -59,6 +59,7 @@ def homepage(request):
        # "uploads": uploads,
         #"cios": cios,
    # })
+   return render(request,"home.html")
 @login_required
 def profile(request):
     form = profileForm(instance=request.user.profile)
