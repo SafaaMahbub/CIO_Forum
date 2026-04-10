@@ -3,17 +3,22 @@
    Sets the base font and page background color
 ===================================================== */
 body {
-    font-family: "PT Sans", Arial, sans-serif;
+
     /*
+     font-family: "PT Sans", Arial, sans-serif;
+     */
+     /*
     citation: https://mycolor.space/gradient?ori=to+right+bottom&hex=%2388B4F5&hex2=%239B87F3&sub=1
     purpose: to generate a background gradient
     */
-    background-image: linear-gradient(to left top, #cedef8, #a4d1ff, #dde5ff, #cedef8, #f0f1ff);
+    background: linear-gradient(to left top, #cedef8, #a4d1ff, #dde5ff, #cedef8, #f0f1ff);
+    background-attachment: fixed;
     overflow: auto;
     margin: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-family: "Quicksand", sans-serif;;
 }
 
 
@@ -32,13 +37,17 @@ h1, h2 {
    Top navigation menu styling
 ===================================================== */
 nav {
+    min-height: 70px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    border-radius: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #b8d3e8;
+    background-color: #b9ccf6;
     color: black;
     overflow: hidden;
-    border-radius: 8px;
     margin-bottom: 20px;
     font-size: 19px;
 }
@@ -46,7 +55,6 @@ nav {
 .navLinks ul {
     display: flex;
     list-style: none;
-    padding: 5px;
     margin: 0;
     align-items: center;
 }
@@ -54,13 +62,13 @@ nav {
 .navLogo{
     width: 70px;
     height: 40px;
-    padding-left: 5px;
 }
 /* =====================================================
    Navigation Links
    Styles the links inside the navigation bar
 ===================================================== */
 nav a {
+    color: black;
     text-align: center;
     font-weight: bold;
     padding: 10px 16px;
@@ -72,7 +80,6 @@ nav a {
 nav a:has(.navLogo) {
     padding: 0;
     display: flex;
-    margin: 10px;
 }
 
 /* =====================================================
@@ -80,7 +87,7 @@ nav a:has(.navLogo) {
    Changes background when hovering over links
 ===================================================== */
 nav a:hover {
-    background-color: chocolate;
+    text-decoration-line:  underline;
 }
 
 
@@ -111,7 +118,7 @@ nav a.active {
 
 .main-container{
     background-color: ghostwhite;
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     flex-grow: 1;
     margin: 0 20px 10px 40px;
