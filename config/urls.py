@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from core import views
 
 from core.views import (
     homepage,
@@ -51,5 +52,8 @@ path("view-all-cios/",viewAllCios, name = "viewAllCios"),
         name="messages_start_user",
     ),
     path("messages/<int:conversation_id>/", messages_thread, name="messages_thread"),
+    path('manage-users/', views.manage_users, name='manage_users'),
+    path('update-role/<int:user_id>/', views.update_role, name='update_role'),
+    path("redirect-after-login/", views.redirect_after_login, name="redirect_after_login"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

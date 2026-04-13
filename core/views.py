@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.contrib.auth.views import redirect_to_login
+from .decorators import block_user_admin, user_admin_only
 
 from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm
 from .models import (
@@ -20,9 +21,42 @@ from .models import (
 )
 
 
+@login_required
+def redirect_after_login(request):
+    if request.user.profile.role == "user_admin":
+        return redirect("manage_users")
+    else:
+        return redirect("homepage")
+
+@login_required
+@user_admin_only
+# Manage users logic for user admin
+def manage_users(request):
+    users = User.objects.all()
+    return render(request, 'manage_users.html', {'users': users})
+
+@login_required
+@user_admin_only
+def update_role(request, user_id):
+    if request.method == "POST":
+        user = User.objects.get(id=user_id)
+        new_role = request.POST.get('role')
+
+        # Prevent modifying yourself
+        if user == request.user:
+            return HttpResponseForbidden("Cannot modify your own role")
+
+        # Prevent assigning user_admin
+        if new_role == 'user_admin':
+            return HttpResponseForbidden('Cannot assign User Admin role')
+
+        user.profile.role = new_role
+        user.profile.save()
+
+    return redirect('manage_users')
+
 def _email_is_uva(user):
     return (user.email or "").lower().endswith("@virginia.edu")
-
 
 def uva_dm_only(view_func):
     """Logged-in users with @virginia.edu email only."""
@@ -60,7 +94,9 @@ def homepage(request):
         #"cios": cios,
    # })
    return render(request,"home.html")
+
 @login_required
+@block_user_admin
 def profile(request):
     form = profileForm(instance=request.user.profile)
     if request.method == "POST":
@@ -80,6 +116,7 @@ def profile(request):
     })
 
 @login_required
+@block_user_admin
 def create_cio(request):
     profile = request.user.profile
 
@@ -105,6 +142,7 @@ def create_cio(request):
     return render(request, "create_cio.html", {"form": form})
 
 @login_required
+@block_user_admin
 def upload_file(request, cio_id):
     cio = get_object_or_404(CIO, id=cio_id)
 
@@ -125,10 +163,12 @@ def upload_file(request, cio_id):
 
     return render(request, "upload_file.html", {"form": form, "cio": cio})
 
+@block_user_admin
 def view_upload(request, id):
     upload = UploadedThing.objects.get(id=id)
     return render(request, "view_upload.html", {"upload": upload})
 
+@block_user_admin
 def create_review(request):
     profile =request.user.profile
     if profile.role not in ["student", "exec"]:
@@ -155,8 +195,8 @@ def create_review(request):
         form = ReviewForm()
     return render(request, "create_review.html", {"form": form})
 
-
 @uva_dm_only
+@block_user_admin
 def messages_inbox(request):
     convs = (
         Conversation.objects.filter(Q(user1=request.user) | Q(user2=request.user))
@@ -169,8 +209,8 @@ def messages_inbox(request):
         rows.append({"conversation": c, "other": other, "last": last})
     return render(request, "messages/inbox.html", {"rows": rows})
 
-
 @uva_dm_only
+@block_user_admin
 def messages_thread(request, conversation_id):
     conv = get_object_or_404(
         Conversation.objects.filter(Q(user1=request.user) | Q(user2=request.user)),
@@ -202,8 +242,8 @@ def messages_thread(request, conversation_id):
         },
     )
 
-
 @uva_dm_only
+@block_user_admin
 def messages_new(request):
     if request.method == "POST":
         form = StartDmForm(request.POST)
@@ -229,8 +269,8 @@ def messages_new(request):
         form = StartDmForm()
     return render(request, "messages/new.html", {"form": form})
 
-
 @uva_dm_only
+@block_user_admin
 def messages_start_user(request, user_id):
     recipient = get_object_or_404(User, pk=user_id)
     if recipient.pk == request.user.pk:
@@ -245,12 +285,13 @@ def messages_start_user(request, user_id):
     conv = get_or_create_conversation(request.user, recipient)
     return redirect("messages_thread", conversation_id=conv.id)
 
-
+@block_user_admin
 def viewAllReviews(request):
     reviews = Review.objects.select_related("profile__user","cio").all()
 
     return render(request, "view_all_reviews.html",{"reviews": reviews})
 
+@block_user_admin
 def viewAllCios(request):
     role = None
     display_name = None

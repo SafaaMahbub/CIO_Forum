@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>User Management</h2>
+
+<table>
+<tr>
+  <th>Username</th>
+  <th>Role</th>
+  <th>Change Role</th>
+</tr>
+
+{% for user in users %}
+<tr>
+  <td>{{ user.username }}</td>
+  <td>{{ user.profile.role }}</td>
+  <td>
+    <form method="POST" action="{% url 'update_role' user.id %}">
+      {% csrf_token %}
+      <select name="role">
+        <option value="guest">Guest</option>
+        <option value="student">Student</option>
+        <option value="exec">Exec</option>
+      </select>
+      <button type="submit">Update</button>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
