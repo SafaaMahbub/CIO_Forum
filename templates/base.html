@@ -25,13 +25,22 @@
     {% if user.is_authenticated %}
         <div class="navLinks">
             <ul>
-            <li><a href="/view-all-reviews/">View Ratings</a></li>
-            <li><a href="/view-all-cios/">View CIOs</a></li>
-            {% if user.email|slice:"-13:" == "@virginia.edu" %}
+            {% if user.profile.role == "user_admin" %}
+                <!-- ONLY user admin sees this -->
+                <li><a href="{% url 'manage_users' %}">Manage Users</a></li>
+
+            {% else %}
+                <!-- Normal users -->
+                <li><a href="/view-all-reviews/">View Ratings</a></li>
+                <li><a href="/view-all-cios/">View CIOs</a></li>
+
+                {% if user.email|slice:"-13:" == "@virginia.edu" %}
                     <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
                     <li><a href="/create-cio/">Create CIO</a></li>
                     <li><a href="/create-review/">Create Review</a></li>
             {%  endif %}
+
+        {%  endif %}
             </ul>
         </div>
 
@@ -79,5 +88,7 @@
     {% endblock %}
 </div>
 <script src="{% static 'js/app.js' %}"></script>
+
+
 </body>
 </html>

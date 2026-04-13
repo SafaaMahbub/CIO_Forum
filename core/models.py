@@ -5,11 +5,11 @@ from django.conf import settings
 
 # Import Django's model system (used to create database tables)
 from django.db import models
-
 from django.contrib.auth.models import User
-
 from django.utils.text import slugify
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 def ordered_user_pair(user_a, user_b):
@@ -63,6 +63,8 @@ class UploadedFile(models.Model):
     def __str__(self):
         return self.title
 
+
+
 # Create a Profile model using Django User model
 # Allows us to attach roles to users
 class Profile(models.Model):
@@ -74,6 +76,7 @@ class Profile(models.Model):
         ("exec", "CIO Exec Member"),        # CIO executive / club leadership member - may edit CIO pages
         ("student", "UVA Student"),  # UVA student with a virginia.edu email - May leave reviews
         ("guest", "Guest"),          # Non-UVA user (view-only, browse through CIOs)
+        ("user_admin", "User Administrator")      # User Admin role specified in Sprint 5
     ]
 
     # OneToOneField creates a one-to-one relationship between Profile and User. (one user - one profile)
@@ -98,6 +101,17 @@ class Profile(models.Model):
     # This makes it much easier to see which user a profile belongs to.
     def __str__(self):
         return f"{self.user.email} - {self.role}"
+
+
+# Automate profile creation
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 class Review(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
