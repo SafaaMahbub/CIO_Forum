@@ -75,3 +75,22 @@ function cancelUploadOperation(){
     document.getElementById('actionBtns').style.display='none';
 
 }
+
+function search(){
+    var input = document.getElementById("mySearch").value.toLowerCase();
+    let reviews = document.getElementsByClassName('review-item');
+
+    for(let i=0;i<reviews.length;i++){
+        let cioName = reviews[i].getElementsByClassName("cio.name")[0];
+        let inputValue = cioName.textContent || cioName.innerText;
+
+        if(inputValue.toLowerCase().indexOf(input)>-1){
+            reviews[i].style.display = "";
+        }
+        else
+        {
+            reviews[i].style.display = "none";
+        }
+    }
+
+}
