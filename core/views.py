@@ -125,7 +125,7 @@ def create_cio(request):
         return redirect("profile")
 
     if request.method == "POST":
-        form = CIOForm(request.POST)
+        form = CIOForm(request.POST, request.FILES)
         if form.is_valid():
             cio = form.save()
 

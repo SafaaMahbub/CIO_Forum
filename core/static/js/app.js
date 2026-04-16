@@ -92,5 +92,25 @@ function search(){
             reviews[i].style.display = "none";
         }
     }
+}
 
+    function searchCios()
+    {
+        var input = document.getElementById("mySearch").value.toLowerCase();
+        let cios = document.getElementsByClassName('cio-item');
+
+        for(let i=0;i<cios.length;i++)
+        {
+            let cioName = cios[i].getElementsByClassName("cio-name")[0];
+            let inputValue = cioName.textContent || cioName.innerText;
+
+            if(inputValue.toLowerCase().startsWith(input))
+            {
+                cios[i].style.display = "";
+            }
+            else
+            {
+                cios[i].style.display = "none";
+            }
+        }
 }

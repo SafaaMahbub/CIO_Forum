@@ -36,10 +36,12 @@
 
                 {% if user.email|slice:"-13:" == "@virginia.edu" %}
                     <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
-                    <li><a href="/create-cio/">Create CIO</a></li>
+
                     <li><a href="/create-review/">Create Review</a></li>
             {%  endif %}
-
+                {% if user.profile.role == "exec" %}
+                    <li><a href="/create-cio/">Create CIO</a></li>
+                {% endif %}
         {%  endif %}
             </ul>
         </div>

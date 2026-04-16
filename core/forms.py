@@ -24,7 +24,7 @@ class DmMessageForm(forms.Form):
 class CIOForm(forms.ModelForm):
     class Meta:
         model = CIO
-        fields = ["name", "description"]
+        fields = ["name", "description", "cio_profile_picture"]
 
 class UploadedFileForm(forms.ModelForm):
     class Meta:

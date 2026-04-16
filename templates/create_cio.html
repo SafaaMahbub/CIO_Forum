@@ -5,13 +5,15 @@
 <h2>Create a CIO</h2>
 
 <div class="form-box">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label>CIO Name:</label>
         {{ form.name }}
 
         <label>Description:</label>
         {{ form.description }}
+        <label>Cio's Logo:</label>
+        {{ form.cio_profile_picture }}
 
         <div class="center-text">
             <button type="submit">Create CIO</button>
@@ -19,6 +21,5 @@
         
     </form>
 </div>
-
 
 {% endblock %}

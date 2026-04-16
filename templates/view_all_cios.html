@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load socialaccount %}
 {% block content %}
- <div class="info">
+ {% comment %}<div class="info">
         {% if user.is_authenticated %}
 
             {% if role == "student" or role == "exec" %}
@@ -20,8 +20,34 @@
                 <p>Guests can browse CIOs but cannot leave reviews.</p>
             {% endif %}
         {% endif %}
+    </div>{% endcomment %}
+    <h1>View All Cios</h1>
+    <div id="searchContainer">
+        <input type="text" id="mySearch" onkeyup="searchCios()" placeholder="Search..." title="Type in a cio">
     </div>
+    <div class="CioContainer">
+    {% if cios %}
+        {% for cio in cios %}
+        <div class="cioCard cio-item">
+            <div class="cio-image">
+                {% if cio.cio_profile_picture %}
+                    <img src="{{ cio.cio_profile_picture.url }}" alt="cio.name" height="200px" width="250px">
+                {% else %}
+                     <img src="{{ cio.cio_profile_picture.url }}" alt="cio.name" height="200px" width="250px">
+                {% endif %}
+            </div>
+        <div class="cio-info">
+                <h3 class="cio-name">{{ cio.name }}</h3>
+                <h3>About</h3>
+                <p>{{ cio.description }}</p>
+            </div>
+        </div>
 
+        {% endfor %}
+    {%  else %}
+        <p>No Cios yet!</p>
+    {% endif %}
+    </div>
 
     <h2>Uploaded Files</h2>
     <ul>
@@ -59,4 +85,5 @@
             <li>No CIOs available.</li>
         {% endfor %}
     </ul>
+
 {% endblock %}
