@@ -189,6 +189,7 @@ def create_review(request):
                 profile=request.user.profile,
                 cio=cio,
                 comment=form.cleaned_data["comment"],
+                anonymous=form.cleaned_data["anonymous"],
                 rating_career_development=form.cleaned_data.get("rating_career_development"),
                 rating_event_quality=form.cleaned_data.get("rating_event_quality"),
                 rating_time_commitment=form.cleaned_data.get("rating_time_commitment"),

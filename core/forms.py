@@ -36,6 +36,12 @@ RATING_CHOICES = [(None, "No rating")] + [(i, str(i)) for i in range(1, 6)]
 class ReviewForm(forms.Form):
     cio = forms.ModelChoiceField(queryset=CIO.objects.all(), label="Select a CIO")
     comment = forms.CharField(widget=forms.Textarea(), label="Add a comment")
+    anonymous = forms.TypedChoiceField(
+        choices=[("", "---------"), (True, "Yes"), (False, "No")],
+        coerce=lambda x: x == "True",
+        required=True,
+        label="Submit anonymously?",
+    )
     rating_career_development = forms.TypedChoiceField(
         choices=RATING_CHOICES, coerce=int, required=False,
         empty_value=None, label="Career Development (1-5)",

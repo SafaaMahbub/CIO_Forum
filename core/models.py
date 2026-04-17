@@ -148,6 +148,7 @@ class Review(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     cio = models.ForeignKey(CIO, on_delete=models.CASCADE)
     comment = models.TextField(blank=True)
+    anonymous = models.BooleanField(default=False)
 
     rating_career_development = models.IntegerField(
         choices=RATING_CHOICES, null=True, blank=True,

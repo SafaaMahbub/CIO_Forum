@@ -10,7 +10,7 @@
         {% for r in reviews %}
             <div class="review-block review-item">
                 <h3 class="cio-name">{{ r.cio.name }}</h3>
-                <p>Created by: {{ r.profile.user.email }}</p>
+                <p>Created by: {% if r.anonymous %}Anonymous Person{% else %}{{ r.profile.user.email }}{% endif %}</p>
                 <p>Comment: {{ r.comment }}</p>
                 <div class="review-ratings">
                     <div class="review-rating-row">

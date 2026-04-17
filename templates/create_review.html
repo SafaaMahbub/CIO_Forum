@@ -18,6 +18,12 @@
                 <ul class="alert">{% for e in form.comment.errors %}<li>{{ e }}</li>{% endfor %}</ul>
             {% endif %}
 
+            {{ form.anonymous.label_tag }}
+            {{ form.anonymous }}
+            {% if form.anonymous.errors %}
+                <ul class="alert">{% for e in form.anonymous.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+            {% endif %}
+
             {% for field in form %}
                 {% if field.name|slice:":7" == "rating_" %}
                 <div class="star-rating-group">

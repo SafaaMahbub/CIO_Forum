@@ -44,7 +44,7 @@ class CIOMembershipAdmin(admin.ModelAdmin):
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
-        "profile", "cio", "comment",
+        "profile", "cio", "comment", "anonymous",
         "rating_career_development", "rating_event_quality",
         "rating_time_commitment", "rating_community_inclusiveness",
     )
