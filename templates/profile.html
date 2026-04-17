@@ -72,13 +72,12 @@
         </div>
     </div>
 
-    {% comment %}{% if profile.role == "student" %}
-    <div class="center-text">
-        <a href="{% url 'create_cio' %}">
-            <button type="button">Create a CIO</button>
-        </a>
-    </div>
-    {% endif %}{% endcomment %}
+
+</div>
+
+<div class="form-box center-text">
+    <h2>Account Management</h2>
+    <a href="{% url 'account_change_password' %}" class="main-btn">Change Password</a>
 </div>
 
 <script src="{% static 'js/app.js' %}"></script>

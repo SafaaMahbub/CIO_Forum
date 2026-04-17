@@ -4,23 +4,35 @@
 {% block content %}
     <div class="info">
         {% if user.is_authenticated %}
-            <h1>Welcome to CS3240 Project</h1>
+            <h1>Welcome to Forum CIO</h1>
 
-            <p>Logged in as {{ display_name|default:user.username }}</p>
-            <p>Your role: {{ role|default:"No role assigned yet" }}</p>
-            {%  comment %}
-        <!--{% else %}
-            <h1>Django is running on Heroku 🚀</h1>
-            <div class="center-text">
-                <a class="main-btn" href="{% url 'account_login' %}">Normal Login</a>
+            <div id="searchContainer">
+                <input type="text" id="mySearch" onkeyup="searchCios()" placeholder="Search for a CIO..." title="Type in a cio">
             </div>
 
-            <div class="center-text">
-                <a class="google-btn" href="{% provider_login_url 'google' %}">
-                    Sign in with Google
-                </a>
+            <div class="CioContainer">
+            {% if cios %}
+                {% for cio in cios %}
+                <div class="cioCard cio-item">
+                    <div class="cio-image">
+                        {% if cio.cio_profile_picture %}
+                            <img src="{{ cio.cio_profile_picture.url }}" alt="cio.name" height="200px" width="250px">
+                        {% else %}
+                             <img src="{{ cio.cio_profile_picture.url }}" alt="cio.name" height="200px" width="250px">
+                        {% endif %}
+                    </div>
+                <div class="cio-info">
+                        <h3 class="cio-name">{{ cio.name }}</h3>
+                        <h3>About</h3>
+                        <p>{{ cio.description }}</p>
+                    </div>
+                </div>
+        
+                {% endfor %}
+            {%  else %}
+                <p>No Cios yet!</p>
+            {% endif %}
             </div>
-            {% endcomment %}
         {% endif %}
     </div>
 {% endblock %}

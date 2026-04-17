@@ -33,30 +33,25 @@
                 <!-- Normal users -->
                 <li><a href="/view-all-reviews/">View Ratings</a></li>
                 <li><a href="/view-all-cios/">View CIOs</a></li>
-
-                {% if user.email|slice:"-13:" == "@virginia.edu" %}
-                    <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
-
-                    <li><a href="/create-review/">Create Review</a></li>
-            {%  endif %}
-                {% if user.profile.role == "exec" %}
-                    <li><a href="/create-cio/">Create CIO</a></li>
-                {% endif %}
-        {%  endif %}
+             {%  endif %}
             </ul>
         </div>
 
-            <!-- TODO# add manage email function if needed -->
-            <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
-            <div  class="navLinks">
-                <ul>
-                    <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
-                    <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
-                    <li><a href="/profile/">
-                        <img src="{{ user.profile.profile_picture.url }}" alt="profilePicture" class="navPic">
-                    </a></li>
-                </ul>
-            </div>
+        <!-- TODO# add manage email function if needed -->
+        <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
+        <div  class="navLinks">
+            <ul>
+                {% if user.profile.role != "guest" %}
+                    <li><a href="/create-review/">Create Review</a></li>
+                    <li><a href="/create-cio/">Create CIO</a></li>
+                    <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
+                {% endif %}
+                <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
+                <li><a href="/profile/">
+                    <img src="{{ user.profile.profile_picture.url }}" alt="profilePicture" class="navPic">
+                </a></li>
+            </ul>
+        </div>
     {% else %}
 
         <div  class="navLinks">
