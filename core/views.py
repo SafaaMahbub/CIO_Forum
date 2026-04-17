@@ -76,24 +76,9 @@ def uva_dm_only(view_func):
     return _wrapped
 
 def homepage(request):
-    #role = None
-    #display_name = None
-    #uploads = UploadedFile.objects.all()
-    #cios = CIO.objects.all()
-
-    #if request.user.is_authenticated:
-     #   display_name = request.user.email or request.user.username
-
-      #  if hasattr(request.user, "profile"):
-       #     role = request.user.profile.role
-
-    #return render(request, "home.html", {
-     #   "role": role,
-      #  "display_name": display_name,
-       # "uploads": uploads,
-        #"cios": cios,
-   # })
-   return render(request,"home.html")
+    cios = CIO.objects.all()
+    reviews = Review.objects.select_related("profile__user", "cio").all()
+    return render(request, "home.html", {"cios": cios, "reviews": reviews})
 
 @login_required
 @block_user_admin
@@ -291,6 +276,12 @@ def messages_start_user(request, user_id):
         return redirect("messages_inbox")
     conv = get_or_create_conversation(request.user, recipient)
     return redirect("messages_thread", conversation_id=conv.id)
+
+@block_user_admin
+def cio_homepage(request, cio_id):
+    cio = get_object_or_404(CIO, id=cio_id)
+    reviews = Review.objects.filter(cio=cio).select_related("profile__user")
+    return render(request, "cio_homepage.html", {"cio": cio, "reviews": reviews})
 
 @block_user_admin
 def viewAllReviews(request):

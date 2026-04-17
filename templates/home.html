@@ -13,24 +13,88 @@
             <div class="CioContainer">
             {% if cios %}
                 {% for cio in cios %}
+                <a href="{% url 'cio_homepage' cio.id %}" class="cioCard-link">
                 <div class="cioCard cio-item">
                     <div class="cio-image">
                         {% if cio.cio_profile_picture %}
-                            <img src="{{ cio.cio_profile_picture.url }}" alt="cio.name" height="200px" width="250px">
+                            <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}" height="200px" width="250px">
                         {% else %}
-                             <img src="{{ cio.cio_profile_picture.url }}" alt="cio.name" height="200px" width="250px">
+                             <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}" height="200px" width="250px">
                         {% endif %}
                     </div>
-                <div class="cio-info">
+                    <div class="cio-info">
                         <h3 class="cio-name">{{ cio.name }}</h3>
                         <h3>About</h3>
                         <p>{{ cio.description }}</p>
                     </div>
                 </div>
-        
+                </a>
+                </a>
                 {% endfor %}
-            {%  else %}
-                <p>No Cios yet!</p>
+            {% else %}
+                <p>No CIOs yet!</p>
+            {% endif %}
+            </div>
+
+            <h2>Recent Reviews</h2>
+            <div class="reviewContainer">
+            {% if reviews %}
+                {% for r in reviews %}
+                    <div class="review-block">
+                        <h3>{{ r.cio.name }}</h3>
+                        <p>Created by: {% if r.anonymous %}Anonymous Person{% else %}{{ r.profile.user.email }}{% endif %}</p>
+                        <p>Comment: {{ r.comment }}</p>
+                        <div class="review-ratings">
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Career Development:</span>
+                                <span class="stars-display" data-rating="{{ r.rating_career_development|default_if_none:'' }}"></span>
+                            </div>
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Event Quality:</span>
+                                <span class="stars-display" data-rating="{{ r.rating_event_quality|default_if_none:'' }}"></span>
+                            </div>
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Time Commitment:</span>
+                                <span class="stars-display" data-rating="{{ r.rating_time_commitment|default_if_none:'' }}"></span>
+                            </div>
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Community & Inclusiveness:</span>
+                                <span class="stars-display" data-rating="{{ r.rating_community_inclusiveness|default_if_none:'' }}"></span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No reviews yet!</p>
+            {% endif %}
+            </div>
+        {% else %}
+            <div class="welcome-banner">
+                <h1>Welcome to Forum CIO</h1>
+                <p>Forum CIO is a platform built for the UVA community to discover, review, and rate Contracted Independent Organizations. Browse CIOs across grounds, read honest reviews from fellow students, and find the right organizations for you. Whether you are looking for career development, community involvement, or new experiences, Forum CIO helps you make informed decisions.</p>
+                <p>Sign in with your UVA account to leave reviews, create CIOs, rate organizations, and message other students. You can also sign in as a guest to browse and explore CIOs.</p>
+            </div>
+
+            <h2>Explore CIOs</h2>
+            <div class="CioContainer">
+            {% if cios %}
+                {% for cio in cios %}
+                <div class="cioCard cioCard-locked">
+                    <div class="cio-image">
+                        {% if cio.cio_profile_picture %}
+                            <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}" height="200px" width="250px">
+                        {% else %}
+                            <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}" height="200px" width="250px">
+                        {% endif %}
+                    </div>
+                    <div class="cio-info">
+                        <h3>{{ cio.name }}</h3>
+                    </div>
+                    <div class="cioCard-warning">Sign in to view information about this CIO</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No CIOs yet!</p>
             {% endif %}
             </div>
         {% endif %}
