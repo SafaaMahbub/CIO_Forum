@@ -22,11 +22,16 @@ py -3.12 --version
 ## Environment Variables
 
 Before running the server, create a `.env` file in the project root and
-add your Google OAuth credentials:
+add your Google OAuth and Amazon S3 credentials:
 
 ``` env
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+AWS_ACCESS_KEY_ID=
+AWS_S3_REGION_NAME=
+AWS_SECRET_ACCESS_KEY=
+AWS_STORAGE_BUCKET_NAME=
+DATABASE_URL=
 ```
 
 ------------------------------------------------------------------------
