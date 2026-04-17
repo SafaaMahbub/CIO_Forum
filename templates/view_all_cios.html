@@ -21,6 +21,25 @@
                 <h3 class="cio-name">{{ cio.name }}</h3>
                 <h3>About</h3>
                 <p>{{ cio.description }}</p>
+                <div class="cio-avg-ratings">
+                    <h4>Average Ratings</h4>
+                    <div class="cio-avg-row">
+                        <span class="cio-avg-label">Career Development:</span>
+                        <span>{% if cio.avg_career_development != None %}{{ cio.avg_career_development }}/5{% else %}No rating{% endif %}</span>
+                    </div>
+                    <div class="cio-avg-row">
+                        <span class="cio-avg-label">Event Quality:</span>
+                        <span>{% if cio.avg_event_quality != None %}{{ cio.avg_event_quality }}/5{% else %}No rating{% endif %}</span>
+                    </div>
+                    <div class="cio-avg-row">
+                        <span class="cio-avg-label">Time Commitment:</span>
+                        <span>{% if cio.avg_time_commitment != None %}{{ cio.avg_time_commitment }}/5{% else %}No rating{% endif %}</span>
+                    </div>
+                    <div class="cio-avg-row">
+                        <span class="cio-avg-label">Community & Inclusiveness:</span>
+                        <span>{% if cio.avg_community_inclusiveness != None %}{{ cio.avg_community_inclusiveness }}/5{% else %}No rating{% endif %}</span>
+                    </div>
+                </div>
             </div>
         </div>
 

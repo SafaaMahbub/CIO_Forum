@@ -10,7 +10,15 @@ class CIOMembershipInline(admin.TabularInline):
 
 @admin.register(CIO)
 class CIOAdmin(admin.ModelAdmin):
-    list_display = ("name", "total_members", "active_members", "inactive_members")
+    list_display = (
+        "name", "total_members", "active_members", "inactive_members",
+        "avg_career_development", "avg_event_quality",
+        "avg_time_commitment", "avg_community_inclusiveness",
+    )
+    readonly_fields = (
+        "avg_career_development", "avg_event_quality",
+        "avg_time_commitment", "avg_community_inclusiveness",
+    )
     search_fields = ("name", "description")
     inlines = [CIOMembershipInline]
 
@@ -35,7 +43,11 @@ class CIOMembershipAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("profile","cio","comment")
+    list_display = (
+        "profile", "cio", "comment",
+        "rating_career_development", "rating_event_quality",
+        "rating_time_commitment", "rating_community_inclusiveness",
+    )
     search_fields = ("profile__user__username", "cio__name", "comment")
 
 

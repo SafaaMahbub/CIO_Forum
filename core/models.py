@@ -34,6 +34,11 @@ class CIO(models.Model):
     description = models.TextField(blank=True)
     cio_profile_picture = models.ImageField(upload_to="cio_profile_pictures")
 
+    avg_career_development = models.FloatField(null=True, blank=True)
+    avg_event_quality = models.FloatField(null=True, blank=True)
+    avg_time_commitment = models.FloatField(null=True, blank=True)
+    avg_community_inclusiveness = models.FloatField(null=True, blank=True)
+
     def __str__(self):
         return self.name
 
@@ -45,6 +50,22 @@ class CIO(models.Model):
 
     def inactive_members(self):
         return self.memberships.filter(is_active=False).count()
+
+    def update_average_ratings(self):
+        reviews = self.review_set.all()
+        for field, avg_field in [
+            ("rating_career_development", "avg_career_development"),
+            ("rating_event_quality", "avg_event_quality"),
+            ("rating_time_commitment", "avg_time_commitment"),
+            ("rating_community_inclusiveness", "avg_community_inclusiveness"),
+        ]:
+            rated = reviews.filter(**{f"{field}__isnull": False})
+            if rated.exists():
+                total = sum(getattr(r, field) for r in rated)
+                setattr(self, avg_field, round(total / rated.count(), 2))
+            else:
+                setattr(self, avg_field, None)
+        self.save()
 
 
 
@@ -122,9 +143,25 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 class Review(models.Model):
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     cio = models.ForeignKey(CIO, on_delete=models.CASCADE)
     comment = models.TextField(blank=True)
+
+    rating_career_development = models.IntegerField(
+        choices=RATING_CHOICES, null=True, blank=True,
+    )
+    rating_event_quality = models.IntegerField(
+        choices=RATING_CHOICES, null=True, blank=True,
+    )
+    rating_time_commitment = models.IntegerField(
+        choices=RATING_CHOICES, null=True, blank=True,
+    )
+    rating_community_inclusiveness = models.IntegerField(
+        choices=RATING_CHOICES, null=True, blank=True,
+    )
+
     def __str__(self):
         return f"{self.profile.user.username} - {self.cio.name}"
 

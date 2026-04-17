@@ -6,17 +6,35 @@
         <input type="text" id="mySearch" onkeyup="search()" placeholder="Filter reviews by CIO..." title="Type in a cio">
     </div>
     <div class="reviewContainer">
-    {%  if reviews %}
+    {% if reviews %}
         {% for r in reviews %}
             <div class="review-block review-item">
-                <h3 class="cio.name">{{ r.cio.name }}</h3>
+                <h3 class="cio-name">{{ r.cio.name }}</h3>
                 <p>Created by: {{ r.profile.user.email }}</p>
                 <p>Comment: {{ r.comment }}</p>
+                <div class="review-ratings">
+                    <div class="review-rating-row">
+                        <span class="review-rating-label">Career Development:</span>
+                        <span class="stars-display" data-rating="{{ r.rating_career_development|default_if_none:'' }}"></span>
+                    </div>
+                    <div class="review-rating-row">
+                        <span class="review-rating-label">Event Quality:</span>
+                        <span class="stars-display" data-rating="{{ r.rating_event_quality|default_if_none:'' }}"></span>
+                    </div>
+                    <div class="review-rating-row">
+                        <span class="review-rating-label">Time Commitment:</span>
+                        <span class="stars-display" data-rating="{{ r.rating_time_commitment|default_if_none:'' }}"></span>
+                    </div>
+                    <div class="review-rating-row">
+                        <span class="review-rating-label">Community & Inclusiveness:</span>
+                        <span class="stars-display" data-rating="{{ r.rating_community_inclusiveness|default_if_none:'' }}"></span>
+                    </div>
+                </div>
             </div>
         {% endfor %}
-    {%  else %}
+    {% else %}
         <p>No reviews yet!</p>
     {% endif %}
     </div>
 </div>
-{%  endblock %}
+{% endblock %}

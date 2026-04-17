@@ -503,6 +503,116 @@ button:hover {
     border-radius: 25px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     width: 70%;
+    text-align: left;
+}
+
+/* =====================================================
+   Star Rating Widget (create review form)
+===================================================== */
+.star-rating-group {
+    margin-bottom: 14px;
+}
+
+.star-rating-group label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.star-rating {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.star-rating .star {
+    font-size: 28px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.star-rating .star:hover,
+.star-rating .star.hovered {
+    color: #f5a623;
+}
+
+.star-rating .star.selected {
+    color: #f5a623;
+}
+
+/* =====================================================
+   Star Rating Display (view reviews)
+===================================================== */
+.review-ratings {
+    margin-top: 10px;
+}
+
+.review-rating-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.review-rating-label {
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.stars-display .star-filled {
+    color: #f5a623;
+    font-size: 18px;
+}
+
+.stars-display .star-empty {
+    color: #ccc;
+    font-size: 18px;
+}
+
+.stars-display .no-rating {
+    color: #999;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.stars-display .star-half {
+    position: relative;
+    display: inline-block;
+    color: #ccc;
+    font-size: 18px;
+}
+
+.stars-display .star-half::before {
+    content: "\2733";
+    content: "★";
+    position: absolute;
+    left: 0;
+    overflow: hidden;
+    color: #f5a623;
+    width: 50%;
+}
+
+/* =====================================================
+   CIO Card Average Ratings
+===================================================== */
+.cio-avg-ratings {
+    text-align: left;
+    margin-top: 8px;
+}
+
+.cio-avg-ratings h4 {
+    margin: 6px 0 4px;
+    font-size: 14px;
+}
+
+.cio-avg-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+    font-size: 13px;
+}
+
+.cio-avg-label {
+    width: 190px;
+    flex-shrink: 0;
 }
 
 /* =====================================================

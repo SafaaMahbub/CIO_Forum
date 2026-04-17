@@ -3,20 +3,38 @@
 {% block content %}
     <h1>Create a Review</h1>
     <div class="form-box">
-        <form  action="" method= "post">
+        <form action="" method="post">
             {% csrf_token %}
-            {% for f in form %}
 
-                {{ f.label_tag }}
-                {{ f }}
-                {%  if f.errors %}
-                    <ul class ="alert">
-                        {% for error in f.errors %}
-                            <li>{{ error }}</li>
+            {{ form.cio.label_tag }}
+            {{ form.cio }}
+            {% if form.cio.errors %}
+                <ul class="alert">{% for e in form.cio.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+            {% endif %}
+
+            {{ form.comment.label_tag }}
+            {{ form.comment }}
+            {% if form.comment.errors %}
+                <ul class="alert">{% for e in form.comment.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+            {% endif %}
+
+            {% for field in form %}
+                {% if field.name|slice:":7" == "rating_" %}
+                <div class="star-rating-group">
+                    <label>{{ field.label }}</label>
+                    <div class="star-rating" data-field="{{ field.name }}">
+                        {% for i in "12345" %}
+                            <span class="star" data-value="{{ i }}">&#9733;</span>
                         {% endfor %}
-                    </ul>
+                    </div>
+                    <input type="hidden" name="{{ field.name }}" value="">
+                    {% if field.errors %}
+                        <ul class="alert">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
                 {% endif %}
             {% endfor %}
+
             <div class="center-text">
                 <button type="submit">Submit Review</button>
             </div>

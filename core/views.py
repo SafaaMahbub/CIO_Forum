@@ -184,11 +184,17 @@ def create_review(request):
                 messages.error(request, "Review already exists. Please choose a different CIO from the list.")
                 return redirect("create_review")
 
+            cio = form.cleaned_data["cio"]
             Review.objects.create(
                 profile=request.user.profile,
-                cio=form.cleaned_data["cio"],
-                comment=form.cleaned_data["comment"]
+                cio=cio,
+                comment=form.cleaned_data["comment"],
+                rating_career_development=form.cleaned_data.get("rating_career_development"),
+                rating_event_quality=form.cleaned_data.get("rating_event_quality"),
+                rating_time_commitment=form.cleaned_data.get("rating_time_commitment"),
+                rating_community_inclusiveness=form.cleaned_data.get("rating_community_inclusiveness"),
             )
+            cio.update_average_ratings()
             messages.success(request, "Review has been created successfully.")
             return redirect("viewAllReviews")
     else:

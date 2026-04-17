@@ -2,6 +2,8 @@ let prevImg;
 document.addEventListener('DOMContentLoaded', () => {
     setupNotifications();
     setupLogout();
+    setupStarRatings();
+    renderDisplayStars();
 
     const picPreview = document.getElementById('picPreview');
     if(picPreview) prevImg = picPreview.src;
@@ -81,7 +83,7 @@ function search(){
     let reviews = document.getElementsByClassName('review-item');
 
     for(let i=0;i<reviews.length;i++){
-        let cioName = reviews[i].getElementsByClassName("cio.name")[0];
+        let cioName = reviews[i].getElementsByClassName("cio-name")[0];
         let inputValue = cioName.textContent || cioName.innerText;
 
         if(inputValue.toLowerCase().indexOf(input)>-1){
@@ -113,4 +115,61 @@ function search(){
                 cios[i].style.display = "none";
             }
         }
+}
+
+function setupStarRatings() {
+    document.querySelectorAll('.star-rating').forEach(group => {
+        const fieldName = group.dataset.field;
+        const hiddenInput = group.parentElement.querySelector('input[name="' + fieldName + '"]');
+        const stars = group.querySelectorAll('.star');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', () => {
+                const val = parseInt(star.dataset.value);
+                stars.forEach(s => {
+                    s.classList.toggle('hovered', parseInt(s.dataset.value) <= val);
+                });
+            });
+
+            star.addEventListener('mouseleave', () => {
+                stars.forEach(s => s.classList.remove('hovered'));
+            });
+
+            star.addEventListener('click', () => {
+                const val = parseInt(star.dataset.value);
+                const currentVal = parseInt(hiddenInput.value);
+                if (currentVal === val) {
+                    hiddenInput.value = '';
+                    stars.forEach(s => s.classList.remove('selected'));
+                } else {
+                    hiddenInput.value = val;
+                    stars.forEach(s => {
+                        s.classList.toggle('selected', parseInt(s.dataset.value) <= val);
+                    });
+                }
+            });
+        });
+    });
+}
+
+function renderDisplayStars() {
+    document.querySelectorAll('.stars-display').forEach(container => {
+        const raw = container.dataset.rating;
+        if (!raw) {
+            container.innerHTML = '<span class="no-rating">No rating</span>';
+            return;
+        }
+        const val = parseFloat(raw);
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(val)) {
+                html += '<span class="star-filled">&#9733;</span>';
+            } else if (i === Math.ceil(val) && val % 1 >= 0.25) {
+                html += '<span class="star-half">&#9733;</span>';
+            } else {
+                html += '<span class="star-empty">&#9733;</span>';
+            }
+        }
+        container.innerHTML = html;
+    });
 }

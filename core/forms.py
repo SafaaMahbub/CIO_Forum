@@ -31,9 +31,27 @@ class UploadedFileForm(forms.ModelForm):
         model = UploadedFile
         fields = ["title", "file"]
 
+RATING_CHOICES = [(None, "No rating")] + [(i, str(i)) for i in range(1, 6)]
+
 class ReviewForm(forms.Form):
     cio = forms.ModelChoiceField(queryset=CIO.objects.all(), label="Select a CIO")
     comment = forms.CharField(widget=forms.Textarea(), label="Add a comment")
+    rating_career_development = forms.TypedChoiceField(
+        choices=RATING_CHOICES, coerce=int, required=False,
+        empty_value=None, label="Career Development (1-5)",
+    )
+    rating_event_quality = forms.TypedChoiceField(
+        choices=RATING_CHOICES, coerce=int, required=False,
+        empty_value=None, label="Event Quality (1-5)",
+    )
+    rating_time_commitment = forms.TypedChoiceField(
+        choices=RATING_CHOICES, coerce=int, required=False,
+        empty_value=None, label="Time Commitment (1-5)",
+    )
+    rating_community_inclusiveness = forms.TypedChoiceField(
+        choices=RATING_CHOICES, coerce=int, required=False,
+        empty_value=None, label="Community & Inclusiveness (1-5)",
+    )
 
 class profileForm(forms.ModelForm):
     class Meta:
