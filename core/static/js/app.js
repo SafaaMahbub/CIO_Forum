@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupScrollPreservingLinks();
     restorePendingScroll();
     scrollChatThreadToBottom();
+    applyCategoryPillColors();
 
     const picPreview = document.getElementById('picPreview');
     if(picPreview) prevImg = picPreview.src;
@@ -54,6 +55,12 @@ function scrollChatThreadToBottom() {
     if (thread) {
         thread.scrollTop = thread.scrollHeight;
     }
+}
+
+function applyCategoryPillColors() {
+    document.querySelectorAll('.category-pill[data-color]').forEach(el => {
+        el.style.backgroundColor = el.dataset.color;
+    });
 }
 
 function restorePendingScroll() {

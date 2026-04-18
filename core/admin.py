@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CIO, Profile, CIOLeadership, CIOMembership, MembershipRequest, Review, Comment, Conversation, Message
+from .models import CIO, Category, Profile, CIOLeadership, CIOMembership, MembershipRequest, Review, Comment, Conversation, Message
 
 
 
@@ -25,7 +25,15 @@ class CIOAdmin(admin.ModelAdmin):
         "avg_time_commitment", "avg_community_inclusiveness",
     )
     search_fields = ("name", "description")
+    filter_horizontal = ("categories",)
     inlines = [CIOLeadershipInline, CIOMembershipInline]
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug", "color")
+    search_fields = ("name", "slug")
+    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Profile)

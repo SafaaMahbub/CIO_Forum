@@ -4,6 +4,13 @@
 {% block content %}
 <div class="cio-homepage">
     <h1 class="center-text">{{ cio.name }}</h1>
+    {% if cio.categories.all %}
+        <div class="category-pill-list category-pill-list-center">
+            {% for cat in cio.categories.all %}
+                <span class="category-pill" data-color="{{ cat.color }}">{{ cat.name }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <div class="cio-top-section">
         <div class="cio-left-column">

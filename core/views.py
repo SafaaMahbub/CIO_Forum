@@ -15,6 +15,7 @@ from .models import (
     CIOMembership,
     MembershipRequest,
     CIO,
+    Category,
     Review,
     Comment,
     UploadedFile,
@@ -121,6 +122,14 @@ def _filter_cios_by_search(cios_qs, query):
     return cios_qs.filter(name__icontains=query)
 
 
+def _filter_cios_by_category(cios_qs, category_slug):
+    """Filter a CIO queryset to those tagged with the given category slug."""
+    slug = (category_slug or "").strip()
+    if not slug:
+        return cios_qs
+    return cios_qs.filter(categories__slug=slug).distinct()
+
+
 HOMEPAGE_CIO_LIMIT = 3
 HOMEPAGE_REVIEW_LIMIT = 5
 
@@ -128,8 +137,12 @@ HOMEPAGE_REVIEW_LIMIT = 5
 def homepage(request):
     sort_key = request.GET.get("sort", "")
     search_query = request.GET.get("q", "")
-    all_cios = _filter_cios_by_search(
-        _apply_cio_sort(CIO.objects.all(), sort_key), search_query
+    category_slug = request.GET.get("category", "")
+    all_cios = _filter_cios_by_category(
+        _filter_cios_by_search(
+            _apply_cio_sort(CIO.objects.all(), sort_key), search_query
+        ),
+        category_slug,
     )
     total_cios = all_cios.count()
     cios = all_cios[:HOMEPAGE_CIO_LIMIT]
@@ -148,6 +161,8 @@ def homepage(request):
         "reviews": reviews,
         "sort_key": sort_key,
         "search_query": search_query,
+        "category_slug": category_slug,
+        "all_categories": Category.objects.all(),
         "review_search_query": review_search_query,
         "has_more_cios": remaining_cios > 0,
         "has_more_reviews": remaining_reviews > 0,
@@ -504,8 +519,12 @@ def viewAllCios(request):
     uploads = UploadedFile.objects.all()
     sort_key = request.GET.get("sort", "")
     search_query = request.GET.get("q", "")
-    cios = _filter_cios_by_search(
-        _apply_cio_sort(CIO.objects.all(), sort_key), search_query
+    category_slug = request.GET.get("category", "")
+    cios = _filter_cios_by_category(
+        _filter_cios_by_search(
+            _apply_cio_sort(CIO.objects.all(), sort_key), search_query
+        ),
+        category_slug,
     )
 
     if request.user.is_authenticated:
@@ -521,6 +540,8 @@ def viewAllCios(request):
         "cios": cios,
         "sort_key": sort_key,
         "search_query": search_query,
+        "category_slug": category_slug,
+        "all_categories": Category.objects.all(),
     })
 
 

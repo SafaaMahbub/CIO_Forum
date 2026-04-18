@@ -11,6 +11,15 @@
                 <button type="submit" class="search-btn">Search</button>
             </div>
             <div class="sort-field">
+                <label for="cioCategorySelect" class="sort-label">Category:</label>
+                <select name="category" id="cioCategorySelect" onchange="preserveScrollSubmit('cioFilterForm')" title="Filter CIOs by category">
+                    <option value="" {% if category_slug == "" %}selected{% endif %}>All categories</option>
+                    {% for cat in all_categories %}
+                        <option value="{{ cat.slug }}" {% if category_slug == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="sort-field">
                 <label for="cioSortSelect" class="sort-label">Sort by:</label>
                 <select name="sort" id="cioSortSelect" onchange="preserveScrollSubmit('cioFilterForm')" title="Sort CIOs by rating">
                     <option value="" {% if sort_key == "" %}selected{% endif %}>Default (Name A-Z)</option>
@@ -21,7 +30,7 @@
                 </select>
             </div>
             {% if search_query %}
-                <a href="{% url 'viewAllCios' %}{% if sort_key %}?sort={{ sort_key }}{% endif %}" class="clear-search-link" data-preserve-scroll>Clear search</a>
+                <a href="{% url 'viewAllCios' %}?{% if sort_key %}sort={{ sort_key }}{% if category_slug %}&{% endif %}{% endif %}{% if category_slug %}category={{ category_slug }}{% endif %}" class="clear-search-link" data-preserve-scroll>Clear search</a>
             {% endif %}
         </div>
     </form>
@@ -43,6 +52,13 @@
             </div>
         <div class="cio-info">
                 <h3 class="cio-name">{{ cio.name }}</h3>
+                {% if cio.categories.all %}
+                    <div class="category-pill-list">
+                        {% for cat in cio.categories.all %}
+                            <span class="category-pill" data-color="{{ cat.color }}">{{ cat.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 <h3>About</h3>
                 <p>{{ cio.description|truncatewords:25 }}</p>
                 <div class="cio-card-ratings">

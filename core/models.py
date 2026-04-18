@@ -29,10 +29,33 @@ def cio_upload_path(instance, filename):
     cio = instance.cio
     return f"cio_uploads/{cio.id}_{slugify(cio.name)}/{filename}"
 
+class Category(models.Model):
+    """A tag/category a CIO can belong to (e.g. Academic, Service, Cultural, Sports)."""
+
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=60, unique=True)
+    color = models.CharField(
+        max_length=7,
+        default="#2a6fb5",
+        help_text="Hex color used for this category's badge (e.g. #4a8fd4).",
+    )
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name_plural = "categories"
+
+    def __str__(self):
+        return self.name
+
+
 class CIO(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     cio_profile_picture = models.ImageField(upload_to="cio_profile_pictures")
+    categories = models.ManyToManyField(
+        Category, blank=True, related_name="cios",
+        help_text="Optional categories/tags describing this CIO.",
+    )
 
     avg_career_development = models.FloatField(null=True, blank=True)
     avg_event_quality = models.FloatField(null=True, blank=True)

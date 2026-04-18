@@ -2,7 +2,7 @@ from django import forms
 from .models import CIO
 from .models import UploadedFile
 
-from .models import CIO, Review, Profile, Comment
+from .models import CIO, Review, Profile, Comment, Category
 
 
 
@@ -22,9 +22,16 @@ class DmMessageForm(forms.Form):
 
 
 class CIOForm(forms.ModelForm):
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label="Categories (optional)",
+    )
+
     class Meta:
         model = CIO
-        fields = ["name", "description", "cio_profile_picture"]
+        fields = ["name", "description", "cio_profile_picture", "categories"]
 
 class UploadedFileForm(forms.ModelForm):
     class Meta:

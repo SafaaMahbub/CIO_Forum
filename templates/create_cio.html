@@ -36,9 +36,29 @@
                 <div class="form-group">
                     <label for="{{ form.cio_profile_picture.id_for_label }}">CIO Logo</label>
                     {{ form.cio_profile_picture }}
-                    <small class="form-help">Upload a square image if possible (PNG or JPG).</small>
+                    <small class="form-help">Upload a square image if possible.</small>
                     {% if form.cio_profile_picture.errors %}
                         <ul class="form-errors">{% for e in form.cio_profile_picture.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ form.categories.label }}</label>
+                    <div class="category-checkbox-group">
+                        {% for choice in form.categories %}
+                            <label class="category-checkbox">
+                                {{ choice.tag }}
+                                <span>{{ choice.choice_label }}</span>
+                            </label>
+                        {% empty %}
+                            <p class="form-help">
+                                No categories available yet. Ask an admin to add some.
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <small class="form-help">Pick any that apply. Leave blank if none fit.</small>
+                    {% if form.categories.errors %}
+                        <ul class="form-errors">{% for e in form.categories.errors %}<li>{{ e }}</li>{% endfor %}</ul>
                     {% endif %}
                 </div>
 
