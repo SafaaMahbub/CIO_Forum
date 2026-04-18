@@ -78,45 +78,6 @@ function cancelUploadOperation(){
 
 }
 
-function search(){
-    var input = document.getElementById("mySearch").value.toLowerCase();
-    let reviews = document.getElementsByClassName('review-item');
-
-    for(let i=0;i<reviews.length;i++){
-        let cioName = reviews[i].getElementsByClassName("cio-name")[0];
-        let inputValue = cioName.textContent || cioName.innerText;
-
-        if(inputValue.toLowerCase().indexOf(input)>-1){
-            reviews[i].style.display = "";
-        }
-        else
-        {
-            reviews[i].style.display = "none";
-        }
-    }
-}
-
-    function searchCios()
-    {
-        var input = document.getElementById("mySearch").value.toLowerCase();
-        let cios = document.getElementsByClassName('cio-item');
-
-        for(let i=0;i<cios.length;i++)
-        {
-            let cioName = cios[i].getElementsByClassName("cio-name")[0];
-            let inputValue = cioName.textContent || cioName.innerText;
-
-            if(inputValue.toLowerCase().indexOf(input) > -1)
-            {
-                cios[i].style.display = "";
-            }
-            else
-            {
-                cios[i].style.display = "none";
-            }
-        }
-}
-
 function setupStarRatings() {
     document.querySelectorAll('.star-rating').forEach(group => {
         const fieldName = group.dataset.field;

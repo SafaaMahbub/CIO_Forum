@@ -2,9 +2,18 @@
 {% block content %}
 <div class="info">
     <h1>View All Reviews</h1>
-    <div id="searchContainer">
-        <input type="text" id="mySearch" onkeyup="search()" placeholder="Filter reviews by CIO..." title="Type in a cio">
-    </div>
+    <form method="get" id="reviewFilterForm" action="">
+        <div id="searchContainer">
+            <div class="search-field">
+                <span class="search-icon" aria-hidden="true">&#128269;</span>
+                <input type="text" name="q" id="mySearch" value="{{ search_query }}" placeholder="Find reviews by CIO name..." title="Type in a cio name and press Enter">
+                <button type="submit" class="search-btn">Search</button>
+            </div>
+            {% if search_query %}
+                <a href="{% url 'viewAllReviews' %}" class="clear-search-link">Clear search</a>
+            {% endif %}
+        </div>
+    </form>
     <div class="reviewContainer">
     {% if reviews %}
         {% for r in reviews %}
@@ -38,7 +47,11 @@
             </div>
         {% endfor %}
     {% else %}
-        <p>No reviews yet!</p>
+        {% if search_query %}
+            <p>No reviews found matching "{{ search_query }}".</p>
+        {% else %}
+            <p>No reviews yet!</p>
+        {% endif %}
     {% endif %}
     </div>
 </div>

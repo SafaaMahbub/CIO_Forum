@@ -4,17 +4,41 @@
 {% block content %}
     <div class="info">
         {% if user.is_authenticated %}
-            <h1>Welcome to Forum CIO</h1>
+            <h1>Start Your CIO Search</h1>
 
-            <div id="searchContainer">
-                <input type="text" id="mySearch" onkeyup="searchCios()" placeholder="Search for a CIO..." title="Type in a cio">
-            </div>
+            <form method="get" id="cioFilterForm" action="">
+                {% if review_search_query %}<input type="hidden" name="rq" value="{{ review_search_query }}">{% endif %}
+                <div id="searchContainer">
+                    <div class="search-field">
+                        <span class="search-icon" aria-hidden="true">&#128269;</span>
+                        <input type="text" name="q" id="mySearch" value="{{ search_query }}" placeholder="Search for a CIO..." title="Type in a cio name and press Enter">
+                        <button type="submit" class="search-btn">Search</button>
+                    </div>
+                    <div class="sort-field">
+                        <label for="cioSortSelect" class="sort-label">Sort by:</label>
+                        <select name="sort" id="cioSortSelect" onchange="document.getElementById('cioFilterForm').submit()" title="Sort CIOs by rating">
+                            <option value="" {% if sort_key == "" %}selected{% endif %}>Default (Name A-Z)</option>
+                            <option value="avgCareer" {% if sort_key == "avgCareer" %}selected{% endif %}>Career Development (high to low)</option>
+                            <option value="avgEvent" {% if sort_key == "avgEvent" %}selected{% endif %}>Event Quality (high to low)</option>
+                            <option value="avgTime" {% if sort_key == "avgTime" %}selected{% endif %}>Time Commitment (high to low)</option>
+                            <option value="avgCommunity" {% if sort_key == "avgCommunity" %}selected{% endif %}>Community & Inclusiveness (high to low)</option>
+                        </select>
+                    </div>
+                    {% if search_query %}
+                        <a href="{% url 'homepage' %}?{% if sort_key %}sort={{ sort_key }}{% endif %}{% if sort_key and review_search_query %}&{% endif %}{% if review_search_query %}rq={{ review_search_query }}{% endif %}" class="clear-search-link">Clear search</a>
+                    {% endif %}
+                </div>
+            </form>
 
             <div class="CioContainer">
             {% if cios %}
                 {% for cio in cios %}
                 <a href="{% url 'cio_homepage' cio.id %}" class="cioCard-link">
-                <div class="cioCard cio-item">
+                <div class="cioCard cio-item"
+                     data-avg-career="{{ cio.avg_career_development|default_if_none:'' }}"
+                     data-avg-event="{{ cio.avg_event_quality|default_if_none:'' }}"
+                     data-avg-time="{{ cio.avg_time_commitment|default_if_none:'' }}"
+                     data-avg-community="{{ cio.avg_community_inclusiveness|default_if_none:'' }}">
                     <div class="cio-image">
                         {% if cio.cio_profile_picture %}
                             <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}">
@@ -26,6 +50,24 @@
                         <h3 class="cio-name">{{ cio.name }}</h3>
                         <h3>About</h3>
                         <p>{{ cio.description|truncatewords:25 }}</p>
+                        <div class="cio-card-ratings">
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Career Development:</span>
+                                <span class="stars-display" data-rating="{{ cio.avg_career_development|default_if_none:'' }}"></span>
+                            </div>
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Event Quality:</span>
+                                <span class="stars-display" data-rating="{{ cio.avg_event_quality|default_if_none:'' }}"></span>
+                            </div>
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Time Commitment:</span>
+                                <span class="stars-display" data-rating="{{ cio.avg_time_commitment|default_if_none:'' }}"></span>
+                            </div>
+                            <div class="review-rating-row">
+                                <span class="review-rating-label">Community & Inclusiveness:</span>
+                                <span class="stars-display" data-rating="{{ cio.avg_community_inclusiveness|default_if_none:'' }}"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 </a>
@@ -35,7 +77,30 @@
             {% endif %}
             </div>
 
-            <h2>Recent Reviews</h2>
+            {% if has_more_cios %}
+                <div class="more-indicator">
+                    <span class="more-count">+{{ remaining_cios }} more CIO{{ remaining_cios|pluralize }}</span>
+                </div>
+            {% endif %}
+            <div class="view-more-link">
+                <a href="{% url 'viewAllCios' %}">View all CIOs &rarr;</a>
+            </div>
+
+            <h2>User Reviews</h2>
+            <form method="get" id="reviewFilterForm" action="">
+                {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                {% if sort_key %}<input type="hidden" name="sort" value="{{ sort_key }}">{% endif %}
+                <div id="searchContainer">
+                    <div class="search-field">
+                        <span class="search-icon" aria-hidden="true">&#128269;</span>
+                        <input type="text" name="rq" id="reviewSearch" value="{{ review_search_query }}" placeholder="Find reviews by CIO name..." title="Type in a cio name and press Enter">
+                        <button type="submit" class="search-btn">Search</button>
+                    </div>
+                    {% if review_search_query %}
+                        <a href="{% url 'homepage' %}{% if search_query or sort_key %}?{% if search_query %}q={{ search_query }}{% endif %}{% if search_query and sort_key %}&{% endif %}{% if sort_key %}sort={{ sort_key }}{% endif %}{% endif %}" class="clear-search-link">Clear search</a>
+                    {% endif %}
+                </div>
+            </form>
             <div class="reviewContainer">
             {% if reviews %}
                 {% for r in reviews %}
@@ -69,8 +134,21 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p>No reviews yet!</p>
+                {% if review_search_query %}
+                    <p>No reviews found matching "{{ review_search_query }}".</p>
+                {% else %}
+                    <p>No reviews yet!</p>
+                {% endif %}
             {% endif %}
+            </div>
+
+            {% if has_more_reviews %}
+                <div class="more-indicator">
+                    <span class="more-count">+{{ remaining_reviews }} more review{{ remaining_reviews|pluralize }}</span>
+                </div>
+            {% endif %}
+            <div class="view-more-link">
+                <a href="{% url 'viewAllReviews' %}">View all reviews &rarr;</a>
             </div>
         {% else %}
             <div class="welcome-banner">

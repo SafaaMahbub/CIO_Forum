@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import F, Q
 from django.http import HttpResponseForbidden
 from django.contrib.auth.views import redirect_to_login
 from .decorators import block_user_admin, user_admin_only
@@ -92,12 +92,67 @@ def _attach_review_verification_flags(reviews):
 
     return reviews
 
+
+CIO_SORT_FIELDS = {
+    "avgCareer": "avg_career_development",
+    "avgEvent": "avg_event_quality",
+    "avgTime": "avg_time_commitment",
+    "avgCommunity": "avg_community_inclusiveness",
+}
+
+
+def _apply_cio_sort(cios_qs, sort_key):
+    """Order a CIO queryset by the selected rating (high to low, nulls last).
+
+    When no sort key is provided, falls back to alphabetical order by name.
+    """
+    field = CIO_SORT_FIELDS.get(sort_key)
+    if not field:
+        return cios_qs.order_by("name")
+    return cios_qs.order_by(F(field).desc(nulls_last=True), "name")
+
+
+def _filter_cios_by_search(cios_qs, query):
+    """Filter a CIO queryset to names containing the given query (case-insensitive)."""
+    query = (query or "").strip()
+    if not query:
+        return cios_qs
+    return cios_qs.filter(name__icontains=query)
+
+
+HOMEPAGE_CIO_LIMIT = 3
+HOMEPAGE_REVIEW_LIMIT = 5
+
+
 def homepage(request):
-    cios = CIO.objects.all()
-    reviews = _attach_review_verification_flags(
-        Review.objects.select_related("profile__user", "cio").all()
+    sort_key = request.GET.get("sort", "")
+    search_query = request.GET.get("q", "")
+    all_cios = _filter_cios_by_search(
+        _apply_cio_sort(CIO.objects.all(), sort_key), search_query
     )
-    return render(request, "home.html", {"cios": cios, "reviews": reviews})
+    total_cios = all_cios.count()
+    cios = all_cios[:HOMEPAGE_CIO_LIMIT]
+    remaining_cios = max(total_cios - HOMEPAGE_CIO_LIMIT, 0)
+
+    review_search_query = request.GET.get("rq", "").strip()
+    review_qs = Review.objects.select_related("profile__user", "cio").order_by("-id")
+    if review_search_query:
+        review_qs = review_qs.filter(cio__name__icontains=review_search_query)
+    total_reviews = review_qs.count()
+    reviews = _attach_review_verification_flags(review_qs[:HOMEPAGE_REVIEW_LIMIT])
+    remaining_reviews = max(total_reviews - HOMEPAGE_REVIEW_LIMIT, 0)
+
+    return render(request, "home.html", {
+        "cios": cios,
+        "reviews": reviews,
+        "sort_key": sort_key,
+        "search_query": search_query,
+        "review_search_query": review_search_query,
+        "has_more_cios": remaining_cios > 0,
+        "has_more_reviews": remaining_reviews > 0,
+        "remaining_cios": remaining_cios,
+        "remaining_reviews": remaining_reviews,
+    })
 
 @login_required
 @block_user_admin
@@ -356,17 +411,26 @@ def cio_homepage(request, cio_id):
 
 @block_user_admin
 def viewAllReviews(request):
-    reviews = _attach_review_verification_flags(
-        Review.objects.select_related("profile__user", "cio").all()
-    )
-    return render(request, "view_all_reviews.html", {"reviews": reviews})
+    search_query = request.GET.get("q", "").strip()
+    review_qs = Review.objects.select_related("profile__user", "cio")
+    if search_query:
+        review_qs = review_qs.filter(cio__name__icontains=search_query)
+    reviews = _attach_review_verification_flags(review_qs)
+    return render(request, "view_all_reviews.html", {
+        "reviews": reviews,
+        "search_query": search_query,
+    })
 
 @block_user_admin
 def viewAllCios(request):
     role = None
     display_name = None
     uploads = UploadedFile.objects.all()
-    cios = CIO.objects.all()
+    sort_key = request.GET.get("sort", "")
+    search_query = request.GET.get("q", "")
+    cios = _filter_cios_by_search(
+        _apply_cio_sort(CIO.objects.all(), sort_key), search_query
+    )
 
     if request.user.is_authenticated:
         display_name = request.user.email or request.user.username
@@ -379,6 +443,8 @@ def viewAllCios(request):
         "display_name": display_name,
         "uploads": uploads,
         "cios": cios,
+        "sort_key": sort_key,
+        "search_query": search_query,
     })
 
 
