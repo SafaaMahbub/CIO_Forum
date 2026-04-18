@@ -1331,6 +1331,12 @@ button:hover {
     color: #444;
 }
 
+.admin-home-actions {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+}
+
 /* =====================================================
    Responsive navbar tweaks
 ===================================================== */

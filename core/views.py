@@ -237,6 +237,7 @@ def upload_file(request, cio_id):
 
     return render(request, "upload_file.html", {"form": form, "cio": cio})
 
+@login_required
 @block_user_admin
 def view_upload(request, id):
     upload = UploadedThing.objects.get(id=id)
@@ -254,6 +255,7 @@ def _build_review_form_from_query(request):
     return ReviewForm(initial={"cio": prefilled_cio}), prefilled_cio
 
 
+@login_required
 @block_user_admin
 def create_review(request):
     profile = request.user.profile
@@ -393,6 +395,7 @@ def messages_start_user(request, user_id):
     conv = get_or_create_conversation(request.user, recipient)
     return redirect("messages_thread", conversation_id=conv.id)
 
+@login_required
 @block_user_admin
 def cio_homepage(request, cio_id):
     cio = get_object_or_404(CIO, id=cio_id)
@@ -426,6 +429,7 @@ def cio_homepage(request, cio_id):
         "can_review": can_review,
     })
 
+@login_required
 @block_user_admin
 def viewAllReviews(request):
     search_query = request.GET.get("q", "").strip()
@@ -472,6 +476,7 @@ def _annotate_comment_roles(comments, cio_id, current_profile_id=None):
     return comments
 
 
+@login_required
 @block_user_admin
 def review_detail(request, review_id):
     review = get_object_or_404(
@@ -512,6 +517,7 @@ def review_detail(request, review_id):
         "form": form,
     })
 
+@login_required
 @block_user_admin
 def viewAllCios(request):
     role = None

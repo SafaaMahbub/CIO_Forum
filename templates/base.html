@@ -19,46 +19,55 @@
     <div class="navLinks">
             <ul>
             <li><a href="#"><img src="{% static 'logo.png' %}" alt="logo" class="navLogo"></a></li>
-            <li><a href="/">Explore</a></li>
+            {% if user.profile.role != "user_admin" %}
+                <li><a href="/">Explore</a></li>
+            {% endif %}
             </ul>
     </div>
     {% if user.is_authenticated %}
-        <div class="navLinks">
-            <ul>
-            {% if user.profile.role == "user_admin" %}
-                <!-- ONLY user admin sees this -->
-                <li><a href="{% url 'manage_users' %}">Manage Users</a></li>
+        {% if user.profile.role == "user_admin" %}
+            <!-- User admin: Manage Users + Logout only -->
+            <div class="navLinks">
+                <ul>
+                    <li><a href="{% url 'manage_users' %}">Manage Users</a></li>
+                </ul>
+            </div>
+            <div class="navLinks">
+                <ul>
+                    <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <div class="navLinks">
+                <ul>
+                    <li><a href="/view-all-cios/">View all CIOs</a></li>
+                    <li><a href="/view-all-reviews/">View all Reviews</a></li>
+                </ul>
+            </div>
 
-            {% else %}
-                <!-- Normal users -->
-                <li><a href="/view-all-cios/">View all CIOs</a></li>
-                <li><a href="/view-all-reviews/">View all Reviews</a></li>
-             {%  endif %}
-            </ul>
-        </div>
-
-        <!-- TODO# add manage email function if needed -->
-        <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
-        <div  class="navLinks">
-            <ul>
-                {% if user.profile.role != "guest" %}
-                    <li><a href="/create-review/">Create Review</a></li>
-                    <li><a href="/create-cio/">Create CIO</a></li>
-                    <li>
-                        <a href="{% url 'messages_inbox' %}" class="nav-messages-link">
-                            Messages
-                            {% if total_notifications > 0 %}
-                                <span class="notif-badge">{{ total_notifications }}</span>
-                            {% endif %}
-                        </a>
-                    </li>
-                {% endif %}
-                <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
-                <li><a href="/profile/">
-                    <img src="{{ user.profile.profile_picture.url }}" alt="profilePicture" class="navPic">
-                </a></li>
-            </ul>
-        </div>
+            <!-- TODO# add manage email function if needed -->
+            <!-- <a href="{% url 'account_email' %}">Manage Email</a> -->
+            <div  class="navLinks">
+                <ul>
+                    {% if user.profile.role != "guest" %}
+                        <li><a href="/create-review/">Create Review</a></li>
+                        <li><a href="/create-cio/">Create CIO</a></li>
+                        <li>
+                            <a href="{% url 'messages_inbox' %}" class="nav-messages-link">
+                                Messages
+                                {% if total_notifications > 0 %}
+                                    <span class="notif-badge">{{ total_notifications }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
+                    <li><a href="/profile/">
+                        <img src="{{ user.profile.profile_picture.url }}" alt="profilePicture" class="navPic">
+                    </a></li>
+                </ul>
+            </div>
+        {% endif %}
     {% else %}
 
         <div  class="navLinks">

@@ -3,7 +3,15 @@
 
 {% block content %}
     <div class="info">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user.profile.role == "user_admin" %}
+            <div class="welcome-banner">
+                <h1>Administrator Dashboard</h1>
+                <p>You are signed in as a User Administrator. Your only available action is to manage user accounts.</p>
+                <div class="admin-home-actions">
+                    <a href="{% url 'manage_users' %}" class="main-btn">Go to Manage Users</a>
+                </div>
+            </div>
+        {% elif user.is_authenticated %}
             <h1>Start Your CIO Search</h1>
 
             <form method="get" id="cioFilterForm" action="" data-preserve-scroll>
