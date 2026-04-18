@@ -106,7 +106,7 @@ function search(){
             let cioName = cios[i].getElementsByClassName("cio-name")[0];
             let inputValue = cioName.textContent || cioName.innerText;
 
-            if(inputValue.toLowerCase().startsWith(input))
+            if(inputValue.toLowerCase().indexOf(input) > -1)
             {
                 cios[i].style.display = "";
             }

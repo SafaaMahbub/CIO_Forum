@@ -32,6 +32,9 @@
     {% endif %}
     </div>
 
+    {% comment %}
+    <!-- 
+    This is the old view all cios page.
     <h2>Uploaded Files</h2>
     <ul>
         {% for file in uploads %}
@@ -49,7 +52,7 @@
             <li>
                 <strong>{{ cio.name }}</strong>
 
-                {% if role == "student" or role == "exec" %}
+                {% if role == "student" %}
                     <a href="{% url 'upload_file' cio.id %}" class="main-btn">Upload File</a>
                 {% endif %}
 
@@ -68,5 +71,7 @@
             <li>No CIOs available.</li>
         {% endfor %}
     </ul>
+    -->
+    {% endcomment %}
 </div>
 {% endblock %}

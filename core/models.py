@@ -42,14 +42,14 @@ class CIO(models.Model):
     def __str__(self):
         return self.name
 
-    def total_members(self):
-        return self.memberships.count()
+    def total_leaders(self):
+        return self.leaderships.count()
 
-    def active_members(self):
-        return self.memberships.filter(is_active=True).count()
+    def active_leaders(self):
+        return self.leaderships.filter(is_active=True).count()
 
-    def inactive_members(self):
-        return self.memberships.filter(is_active=False).count()
+    def inactive_leaders(self):
+        return self.leaderships.filter(is_active=False).count()
 
     def update_average_ratings(self):
         reviews = self.review_set.all()
@@ -96,7 +96,6 @@ class Profile(models.Model):
     # The first value is what gets stored in the database.
     # The second value is the human-readable name shown in Django admin.
     ROLE_CHOICES = [
-        ("exec", "CIO Exec Member"),        # CIO executive / club leadership member - may edit CIO pages
         ("student", "UVA Student"),  # UVA student with a virginia.edu email - May leave reviews
         ("guest", "Guest"),          # Non-UVA user (view-only, browse through CIOs)
         ("user_admin", "User Administrator")      # User Admin role specified in Sprint 5
@@ -113,7 +112,7 @@ class Profile(models.Model):
 
     cios = models.ManyToManyField(
         CIO,
-        through="CIOMembership",
+        through="CIOLeadership",
         related_name="profiles",
         blank=True
     )
@@ -122,6 +121,10 @@ class Profile(models.Model):
 
     # Example output: john@virginia.edu - student
     # This makes it much easier to see which user a profile belongs to.
+    @property
+    def is_exec(self):
+        return self.leaderships.filter(is_active=True).exists()
+
     def __str__(self):
         return f"{self.user.email} - {self.role}"
 
@@ -169,16 +172,16 @@ class Review(models.Model):
     class Meta:
         unique_together = ("profile", "cio")
 
-class CIOMembership(models.Model):
+class CIOLeadership(models.Model):
     profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name="memberships"
+        related_name="leaderships"
     )
     cio = models.ForeignKey(
         CIO,
         on_delete=models.CASCADE,
-        related_name="memberships"
+        related_name="leaderships"
     )
     is_active = models.BooleanField(default=True)
 

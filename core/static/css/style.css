@@ -744,9 +744,24 @@ button:hover {
     padding: 30px;
 }
 
-.cio-profile-header {
+.cio-top-section {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.cio-left-column {
+    flex: 1;
     text-align: center;
-    margin-bottom: 20px;
+}
+
+.cio-right-column {
+    flex: 1;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    padding: 20px 25px;
 }
 
 .cio-profile-img {
@@ -755,11 +770,46 @@ button:hover {
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: block;
+    margin: 0 auto 15px;
+}
+
+.cio-description {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.cio-section-divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
 }
 
 .cio-detail-ratings {
     text-align: left;
 }
+
+.cio-file-list {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.cio-file-list li {
+    margin-bottom: 6px;
+}
+
+.cio-file-list a {
+    color: #1f4f73;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.cio-file-list a:hover {
+    text-decoration: underline;
+}
+
 
 /* =====================================================
    Welcome Banner (unauthenticated homepage)

@@ -11,7 +11,7 @@ from .decorators import block_user_admin, user_admin_only
 
 from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm
 from .models import (
-    CIOMembership,
+    CIOLeadership,
     CIO,
     Review,
     UploadedFile,
@@ -105,7 +105,7 @@ def profile(request):
 def create_cio(request):
     profile = request.user.profile
 
-    if profile.role not in ["student", "exec"]:
+    if profile.role != "student":
         messages.error(request, "You do not have permission to create a CIO.")
         return redirect("profile")
 
@@ -114,7 +114,7 @@ def create_cio(request):
         if form.is_valid():
             cio = form.save()
 
-            CIOMembership.objects.create(
+            CIOLeadership.objects.create(
                 profile=profile,
                 cio=cio,
                 is_active=True
@@ -131,9 +131,8 @@ def create_cio(request):
 def upload_file(request, cio_id):
     cio = get_object_or_404(CIO, id=cio_id)
 
-    # Restrict uploads based on role
-    if not hasattr(request.user, "profile") or request.user.profile.role == "guest":
-        return HttpResponseForbidden("Guests cannot upload files.")
+    if not hasattr(request.user, "profile") or not cio.leaderships.filter(profile=request.user.profile, is_active=True).exists():
+        return HttpResponseForbidden("Only CIO leaders can upload files.")
 
     if request.method == "POST":
         form = UploadedFileForm(request.POST, request.FILES)
@@ -156,7 +155,7 @@ def view_upload(request, id):
 @block_user_admin
 def create_review(request):
     profile =request.user.profile
-    if profile.role not in ["student", "exec"]:
+    if profile.role != "student":
         messages.error(request, "You do not have permission to create a review for a CIO.")
         return redirect("profile")
     if request.method == "POST":
@@ -281,7 +280,13 @@ def messages_start_user(request, user_id):
 def cio_homepage(request, cio_id):
     cio = get_object_or_404(CIO, id=cio_id)
     reviews = Review.objects.filter(cio=cio).select_related("profile__user")
-    return render(request, "cio_homepage.html", {"cio": cio, "reviews": reviews})
+    leaders = cio.leaderships.filter(is_active=True).select_related("profile__user")
+    role = None
+    is_leader = False
+    if request.user.is_authenticated and hasattr(request.user, "profile"):
+        role = request.user.profile.role
+        is_leader = leaders.filter(profile=request.user.profile).exists()
+    return render(request, "cio_homepage.html", {"cio": cio, "reviews": reviews, "leaders": leaders, "role": role, "is_leader": is_leader})
 
 @block_user_admin
 def viewAllReviews(request):
