@@ -22,7 +22,7 @@
         </div>
 
         <div class="page-form-body">
-            <form method="post" enctype="multipart/form-data" class="manage-form">
+            <form method="post" enctype="multipart/form-data" class="manage-form" data-preserve-scroll>
                 {% csrf_token %}
                 <input type="hidden" name="action" value="edit_cio">
 
@@ -109,13 +109,13 @@
                         {% endif %}
                     </div>
                     <div class="manage-list-actions">
-                        <form method="post" class="manage-inline-form">
+                        <form method="post" class="manage-inline-form" data-preserve-scroll>
                             {% csrf_token %}
                             <input type="hidden" name="action" value="approve_request">
                             <input type="hidden" name="request_id" value="{{ req.id }}">
                             <button type="submit" class="manage-btn manage-btn-approve">Approve</button>
                         </form>
-                        <form method="post" class="manage-inline-form">
+                        <form method="post" class="manage-inline-form" data-preserve-scroll>
                             {% csrf_token %}
                             <input type="hidden" name="action" value="reject_request">
                             <input type="hidden" name="request_id" value="{{ req.id }}">
@@ -151,7 +151,7 @@
                         <div class="manage-list-meta">{{ mem.profile.user.email }}</div>
                     </div>
                     <div class="manage-list-actions">
-                        <form method="post" class="manage-inline-form" onsubmit="return confirm('Remove {{ mem.profile.user.username|escapejs }} from this CIO?');">
+                        <form method="post" class="manage-inline-form" data-preserve-scroll onsubmit="return confirm('Remove {{ mem.profile.user.username|escapejs }} from this CIO?');">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="remove_member">
                             <input type="hidden" name="membership_id" value="{{ mem.id }}">
@@ -180,7 +180,7 @@
         </div>
 
         <div class="page-form-body">
-            <form method="post" enctype="multipart/form-data" class="manage-upload-form">
+            <form method="post" enctype="multipart/form-data" class="manage-upload-form" data-preserve-scroll>
                 {% csrf_token %}
                 <input type="hidden" name="action" value="upload_file">
 
@@ -218,7 +218,7 @@
                         </div>
                     </div>
                     <div class="manage-list-actions">
-                        <form method="post" class="manage-inline-form" onsubmit="return confirm('Delete {{ f.title|escapejs }}?');">
+                        <form method="post" class="manage-inline-form" data-preserve-scroll onsubmit="return confirm('Delete {{ f.title|escapejs }}?');">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="delete_file">
                             <input type="hidden" name="file_id" value="{{ f.id }}">
