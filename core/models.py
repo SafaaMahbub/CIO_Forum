@@ -188,6 +188,53 @@ class Review(models.Model):
     class Meta:
         unique_together = ("profile", "cio")
 
+
+class Comment(models.Model):
+    """A discussion comment posted under a Review by any user."""
+
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name="review_comments",
+    )
+    text = models.TextField()
+    anonymous = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"Comment by {self.profile.user.username} on review {self.review_id}"
+
+    @property
+    def is_by_review_author(self):
+        return self.profile_id == self.review.profile_id
+
+    @property
+    def is_by_cio_leader(self):
+        """True if the commenter is an active leader of the review's CIO."""
+        return CIOLeadership.objects.filter(
+            profile_id=self.profile_id,
+            cio_id=self.review.cio_id,
+            is_active=True,
+        ).exists()
+
+    @property
+    def is_by_cio_member(self):
+        """True if the commenter is an active member of the review's CIO."""
+        return CIOMembership.objects.filter(
+            profile_id=self.profile_id,
+            cio_id=self.review.cio_id,
+            is_active=True,
+        ).exists()
+
+
 class CIOLeadership(models.Model):
     profile = models.ForeignKey(
         Profile,

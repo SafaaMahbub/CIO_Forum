@@ -9,13 +9,14 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.views import redirect_to_login
 from .decorators import block_user_admin, user_admin_only
 
-from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm
+from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm, CommentForm
 from .models import (
     CIOLeadership,
     CIOMembership,
     MembershipRequest,
     CIO,
     Review,
+    Comment,
     UploadedFile,
     Conversation,
     Message,
@@ -419,6 +420,80 @@ def viewAllReviews(request):
     return render(request, "view_all_reviews.html", {
         "reviews": reviews,
         "search_query": search_query,
+    })
+
+
+def _annotate_comment_roles(comments, cio_id, current_profile_id=None):
+    """Attach leader/member/author/ownership flags to an iterable of comments.
+
+    Avoids the N+1 queries the Comment model properties would otherwise trigger.
+    """
+    comments = list(comments)
+    profile_ids = {c.profile_id for c in comments}
+    if not profile_ids:
+        return comments
+
+    leader_ids = set(
+        CIOLeadership.objects.filter(
+            cio_id=cio_id, profile_id__in=profile_ids, is_active=True,
+        ).values_list("profile_id", flat=True)
+    )
+    member_ids = set(
+        CIOMembership.objects.filter(
+            cio_id=cio_id, profile_id__in=profile_ids, is_active=True,
+        ).values_list("profile_id", flat=True)
+    )
+
+    for comment in comments:
+        comment.by_cio_leader = comment.profile_id in leader_ids
+        comment.by_cio_member = comment.profile_id in member_ids
+        comment.by_review_author = comment.profile_id == comment.review.profile_id
+        comment.is_mine = (
+            current_profile_id is not None
+            and comment.profile_id == current_profile_id
+        )
+
+    return comments
+
+
+@block_user_admin
+def review_detail(request, review_id):
+    review = get_object_or_404(
+        Review.objects.select_related("profile__user", "cio"),
+        pk=review_id,
+    )
+
+    if request.method == "POST":
+        if not request.user.is_authenticated or not hasattr(request.user, "profile"):
+            return redirect_to_login(request.get_full_path())
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            Comment.objects.create(
+                review=review,
+                profile=request.user.profile,
+                text=form.cleaned_data["text"],
+                anonymous=form.cleaned_data.get("anonymous", False),
+            )
+            messages.success(request, "Comment posted.")
+            return redirect("review_detail", review_id=review.id)
+    else:
+        form = CommentForm() if request.user.is_authenticated else None
+
+    current_profile_id = (
+        request.user.profile.id
+        if request.user.is_authenticated and hasattr(request.user, "profile")
+        else None
+    )
+    comments = _annotate_comment_roles(
+        review.comments.select_related("profile__user").all(),
+        cio_id=review.cio_id,
+        current_profile_id=current_profile_id,
+    )
+
+    return render(request, "review_detail.html", {
+        "review": review,
+        "comments": comments,
+        "form": form,
     })
 
 @block_user_admin

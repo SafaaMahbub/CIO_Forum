@@ -131,6 +131,11 @@
                                 <span class="stars-display" data-rating="{{ r.rating_community_inclusiveness|default_if_none:'' }}"></span>
                             </div>
                         </div>
+                        <a href="{% url 'review_detail' r.id %}" class="comments-btn" aria-label="View discussion for review of {{ r.cio.name }}">
+                            <span class="comments-btn-label">View discussion</span>
+                            <span class="comments-btn-count">{{ r.comments.count }}</span>
+                            <span class="comments-btn-arrow" aria-hidden="true">&rarr;</span>
+                        </a>
                     </div>
                 {% endfor %}
             {% else %}

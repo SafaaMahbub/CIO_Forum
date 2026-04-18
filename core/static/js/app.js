@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupScrollPreservingForms();
     setupScrollPreservingLinks();
     restorePendingScroll();
+    scrollChatThreadToBottom();
 
     const picPreview = document.getElementById('picPreview');
     if(picPreview) prevImg = picPreview.src;
@@ -45,6 +46,13 @@ function savePendingScroll() {
         sessionStorage.setItem(PENDING_SCROLL_KEY, String(window.scrollY));
     } catch (e) {
         // sessionStorage unavailable (e.g. private mode); silently no-op
+    }
+}
+
+function scrollChatThreadToBottom() {
+    const thread = document.getElementById('chatThread');
+    if (thread) {
+        thread.scrollTop = thread.scrollHeight;
     }
 }
 

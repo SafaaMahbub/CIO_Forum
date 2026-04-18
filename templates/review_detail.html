@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="info chat-page review-detail-page">
+    <div class="review-detail-header">
+        
+    </div>
+
+    <div class="review-block review-detail-block">
+        <div class="review-header">
+            <h2 class="cio-name">
+                <a href="{% url 'cio_homepage' review.cio.id %}">{{ review.cio.name }}</a>
+            </h2>
+            {% if review.is_member_verified %}
+                <span class="review-verified-badge">Member Verified</span>
+            {% endif %}
+        </div>
+        <p><strong>Created by:</strong>
+            {% if review.anonymous %}
+                Anonymous Person
+            {% else %}
+                {{ review.profile.user.username }}
+            {% endif %}
+        </p>
+        <p><strong>Comment:</strong> {{ review.comment }}</p>
+        <div class="review-ratings">
+            <div class="review-rating-row">
+                <span class="review-rating-label">Career Development:</span>
+                <span class="stars-display" data-rating="{{ review.rating_career_development|default_if_none:'' }}"></span>
+            </div>
+            <div class="review-rating-row">
+                <span class="review-rating-label">Event Quality:</span>
+                <span class="stars-display" data-rating="{{ review.rating_event_quality|default_if_none:'' }}"></span>
+            </div>
+            <div class="review-rating-row">
+                <span class="review-rating-label">Time Commitment:</span>
+                <span class="stars-display" data-rating="{{ review.rating_time_commitment|default_if_none:'' }}"></span>
+            </div>
+            <div class="review-rating-row">
+                <span class="review-rating-label">Community & Inclusiveness:</span>
+                <span class="stars-display" data-rating="{{ review.rating_community_inclusiveness|default_if_none:'' }}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-panel">
+        <div class="chat-panel-header">
+            <h2 class="chat-panel-title">Discussion</h2>
+            <span class="chat-panel-count">{{ comments|length }} message{{ comments|length|pluralize }}</span>
+        </div>
+
+        <div class="chat-thread" id="chatThread">
+            {% for comment in comments %}
+                {% if comment.anonymous %}
+                    {% with display_name="Anonymous Person" initial="?" %}
+                        <div class="chat-row {% if comment.is_mine %}chat-row-mine{% endif %}">
+                            <div class="chat-avatar chat-avatar-anonymous" aria-hidden="true">{{ initial }}</div>
+                            <div class="chat-bubble-group">
+                                <div class="chat-meta">
+                                    <span class="chat-author">{{ display_name }}</span>
+                                    {% if comment.is_mine %}
+                                        <span class="chat-badge chat-badge-you">You</span>
+                                    {% endif %}
+                                </div>
+                                <div class="chat-bubble {% if comment.is_mine %}chat-bubble-mine{% else %}chat-bubble-theirs{% endif %}">
+                                    <p class="chat-text">{{ comment.text|linebreaksbr }}</p>
+                                </div>
+                                <div class="chat-time">{{ comment.created_at|date:"M j, g:i A" }}</div>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    {% with display_name=comment.profile.user.username %}
+                        <div class="chat-row {% if comment.is_mine %}chat-row-mine{% endif %}">
+                            <div class="chat-avatar" aria-hidden="true">{{ display_name|slice:":1"|upper }}</div>
+                            <div class="chat-bubble-group">
+                                <div class="chat-meta">
+                                    <span class="chat-author">{{ display_name }}</span>
+                                    {% if comment.is_mine %}
+                                        <span class="chat-badge chat-badge-you">You</span>
+                                    {% endif %}
+                                    {% if comment.by_review_author %}
+                                        <span class="chat-badge chat-badge-author">Review Author</span>
+                                    {% endif %}
+                                    {% if comment.by_cio_leader %}
+                                        <span class="chat-badge chat-badge-leader">CIO Leader</span>
+                                    {% endif %}
+                                    {% if comment.by_cio_member %}
+                                        <span class="chat-badge chat-badge-member">CIO Member</span>
+                                    {% endif %}
+                                </div>
+                                <div class="chat-bubble {% if comment.is_mine %}chat-bubble-mine{% else %}chat-bubble-theirs{% endif %}">
+                                    <p class="chat-text">{{ comment.text|linebreaksbr }}</p>
+                                </div>
+                                <div class="chat-time">{{ comment.created_at|date:"M j, g:i A" }}</div>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% endif %}
+            {% empty %}
+                <div class="chat-empty">
+                    <span class="chat-empty-icon" aria-hidden="true">&#128172;</span>
+                    <p>No comments yet.<br>Be the first to start the discussion!</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if user.is_authenticated and form %}
+            <form method="post" class="chat-compose">
+                {% csrf_token %}
+                <div class="chat-compose-input-wrap">
+                    {{ form.text }}
+                    {% if form.text.errors %}
+                        <ul class="alert chat-error">{% for e in form.text.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+                <div class="chat-compose-actions">
+                    <label class="chat-anonymous-toggle">
+                        <span class="chat-anonymous-label">{{ form.anonymous.label }}</span>
+                        {{ form.anonymous }}
+                    </label>
+                    <button type="submit" class="chat-send-btn">
+                        <span>Send</span>
+                        <span class="chat-send-icon" aria-hidden="true">&#10148;</span>
+                    </button>
+                </div>
+                {% if form.anonymous.errors %}
+                    <ul class="alert chat-error">{% for e in form.anonymous.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </form>
+        {% else %}
+            <div class="chat-signin-prompt">
+                <em>Sign in to join the discussion.</em>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

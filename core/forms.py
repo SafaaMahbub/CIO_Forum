@@ -2,7 +2,7 @@ from django import forms
 from .models import CIO
 from .models import UploadedFile
 
-from .models import CIO, Review, Profile
+from .models import CIO, Review, Profile, Comment
 
 
 
@@ -63,3 +63,25 @@ class profileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['profile_picture']
+
+
+class CommentForm(forms.ModelForm):
+    anonymous = forms.TypedChoiceField(
+        choices=[(False, "No"), (True, "Yes")],
+        coerce=lambda x: x == "True",
+        required=True,
+        label="Post anonymously?",
+        initial=False,
+    )
+
+    class Meta:
+        model = Comment
+        fields = ["text", "anonymous"]
+        widgets = {
+            "text": forms.Textarea(attrs={
+                "rows": 3,
+                "placeholder": "Write a comment…",
+                "class": "comment-input",
+            }),
+        }
+        labels = {"text": ""}

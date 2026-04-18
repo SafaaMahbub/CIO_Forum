@@ -3,25 +3,71 @@
 {% block title %}Chat with {{ other.username }} · CIO Rating System{% endblock %}
 
 {% block content %}
-<div class="form-box dm-thread-page">
-    <p><a href="{% url 'messages_inbox' %}">← Back to inbox</a></p>
-    <h2>{{ other.username }}</h2>
+<div class="info chat-page dm-thread-page">
+    <a href="{% url 'messages_inbox' %}" class="back-link">&larr; Back to inbox</a>
 
-    <div class="dm-thread">
-        {% for m in message_list %}
-        <div class="dm-bubble {% if m.sender_id == user.id %}dm-bubble-mine{% else %}dm-bubble-theirs{% endif %}">
-            <div class="dm-meta">{{ m.sender.username }} · {{ m.created_at }}</div>
-            <div class="dm-body">{{ m.body|linebreaksbr }}</div>
+    <div class="chat-panel">
+        <div class="chat-panel-header">
+            <h2 class="chat-panel-title">{{ other.username }}</h2>
+            <span class="chat-panel-count">{{ message_list|length }} message{{ message_list|length|pluralize }}</span>
         </div>
-        {% empty %}
-        <p>No messages yet — say hello below.</p>
-        {% endfor %}
-    </div>
 
-    <form method="post" class="dm-compose">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="main-btn">Send</button>
-    </form>
+        <div class="chat-thread" id="chatThread">
+            {% for m in message_list %}
+                {% with mine=m.sender_id|stringformat:"s" %}
+                    {% if m.sender_id == user.id %}
+                        <div class="chat-row chat-row-mine">
+                            <div class="chat-avatar" aria-hidden="true">{{ m.sender.username|slice:":1"|upper }}</div>
+                            <div class="chat-bubble-group">
+                                <div class="chat-meta">
+                                    <span class="chat-author">{{ m.sender.username }}</span>
+                                    <span class="chat-badge chat-badge-you">You</span>
+                                </div>
+                                <div class="chat-bubble chat-bubble-mine">
+                                    <p class="chat-text">{{ m.body|linebreaksbr }}</p>
+                                </div>
+                                <div class="chat-time">{{ m.created_at|date:"M j, g:i A" }}</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="chat-row">
+                            <div class="chat-avatar" aria-hidden="true">{{ m.sender.username|slice:":1"|upper }}</div>
+                            <div class="chat-bubble-group">
+                                <div class="chat-meta">
+                                    <span class="chat-author">{{ m.sender.username }}</span>
+                                </div>
+                                <div class="chat-bubble chat-bubble-theirs">
+                                    <p class="chat-text">{{ m.body|linebreaksbr }}</p>
+                                </div>
+                                <div class="chat-time">{{ m.created_at|date:"M j, g:i A" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            {% empty %}
+                <div class="chat-empty">
+                    <span class="chat-empty-icon" aria-hidden="true">&#128172;</span>
+                    <p>No messages yet.<br>Say hello below!</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="post" class="chat-compose">
+            {% csrf_token %}
+            <div class="chat-compose-input-wrap">
+                {{ form.body }}
+                {% if form.body.errors %}
+                    <ul class="alert chat-error">{% for e in form.body.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <div class="chat-compose-actions">
+                <span></span>
+                <button type="submit" class="chat-send-btn">
+                    <span>Send</span>
+                    <span class="chat-send-icon" aria-hidden="true">&#10148;</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CIO, Profile, CIOLeadership, CIOMembership, MembershipRequest, Review, Conversation, Message
+from .models import CIO, Profile, CIOLeadership, CIOMembership, MembershipRequest, Review, Comment, Conversation, Message
 
 
 
@@ -66,6 +66,14 @@ class ReviewAdmin(admin.ModelAdmin):
         "rating_time_commitment", "rating_community_inclusiveness",
     )
     search_fields = ("profile__user__username", "cio__name", "comment")
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("id", "review", "profile", "text", "created_at")
+    list_filter = ("review__cio",)
+    search_fields = ("profile__user__username", "review__cio__name", "text")
+    raw_id_fields = ("review", "profile")
 
 
 @admin.register(Conversation)
