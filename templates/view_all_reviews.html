@@ -9,7 +9,12 @@
     {% if reviews %}
         {% for r in reviews %}
             <div class="review-block review-item">
-                <h3 class="cio-name">{{ r.cio.name }}</h3>
+                <div class="review-header">
+                    <h3 class="cio-name">{{ r.cio.name }}</h3>
+                    {% if r.is_member_verified %}
+                        <span class="review-verified-badge">Member Verified</span>
+                    {% endif %}
+                </div>
                 <p>Created by: {% if r.anonymous %}Anonymous Person{% else %}{{ r.profile.user.email }}{% endif %}</p>
                 <p>Comment: {{ r.comment }}</p>
                 <div class="review-ratings">

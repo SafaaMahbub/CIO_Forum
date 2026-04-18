@@ -319,9 +319,18 @@ def cio_homepage(request, cio_id):
 
 @block_user_admin
 def viewAllReviews(request):
-    reviews = Review.objects.select_related("profile__user","cio").all()
+    reviews = list(Review.objects.select_related("profile__user", "cio").all())
+    verified_pairs = set(
+        CIOLeadership.objects.filter(is_active=True).values_list("profile_id", "cio_id")
+    )
+    verified_pairs.update(
+        CIOMembership.objects.filter(is_active=True).values_list("profile_id", "cio_id")
+    )
 
-    return render(request, "view_all_reviews.html",{"reviews": reviews})
+    for review in reviews:
+        review.is_member_verified = (review.profile_id, review.cio_id) in verified_pairs
+
+    return render(request, "view_all_reviews.html", {"reviews": reviews})
 
 @block_user_admin
 def viewAllCios(request):

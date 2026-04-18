@@ -526,6 +526,27 @@ button:hover {
     text-align: left;
 }
 
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.review-header .cio-name {
+    margin: 0;
+}
+
+.review-verified-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: #dff3e3;
+    color: #1f6b2a;
+    font-size: 14px;
+    font-weight: 700;
+}
+
 /* =====================================================
    Star Rating Widget (create review form)
 ===================================================== */
