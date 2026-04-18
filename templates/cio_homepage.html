@@ -107,6 +107,11 @@
         {% if reviews %}
             {% for r in reviews %}
                 <div class="review-block">
+                    {% if r.year %}
+                        <div class="review-header">
+                            <span class="review-year-badge">{{ r.get_year_display }}</span>
+                        </div>
+                    {% endif %}
                     <p><strong>Created by:</strong> {% if r.anonymous %}Anonymous Person{% else %}{{ r.profile.user.email }}{% endif %}</p>
                     <p><strong>Comment:</strong> {{ r.comment }}</p>
                     <div class="review-ratings">

@@ -32,6 +32,13 @@ class UploadedFileForm(forms.ModelForm):
         fields = ["title", "file"]
 
 RATING_CHOICES = [(None, "No rating")] + [(i, str(i)) for i in range(1, 6)]
+YEAR_CHOICES = [
+    ("", "Prefer not to say"),
+    (1, "1st Year"),
+    (2, "2nd Year"),
+    (3, "3rd Year"),
+    (4, "4th Year"),
+]
 
 class ReviewForm(forms.Form):
     cio = forms.ModelChoiceField(queryset=CIO.objects.all(), label="Select a CIO")
@@ -41,6 +48,13 @@ class ReviewForm(forms.Form):
         coerce=lambda x: x == "True",
         required=True,
         label="Submit anonymously?",
+    )
+    year = forms.TypedChoiceField(
+        choices=YEAR_CHOICES,
+        coerce=int,
+        required=False,
+        empty_value=None,
+        label="Your year (optional)",
     )
     rating_career_development = forms.TypedChoiceField(
         choices=RATING_CHOICES, coerce=int, required=False,

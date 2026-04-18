@@ -610,6 +610,25 @@ button:hover {
     font-weight: 700;
 }
 
+.review-year-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #e0e7ff 0%, #eef2ff 100%);
+    color: #3730a3;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: 1px solid #c7d2fe;
+}
+
+.review-year-badge::before {
+    content: "\1F393";
+    margin-right: 6px;
+    font-size: 13px;
+}
+
 /* =====================================================
    Review Footer - View Discussion Button
 ===================================================== */

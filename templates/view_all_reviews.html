@@ -23,6 +23,9 @@
                     {% if r.is_member_verified %}
                         <span class="review-verified-badge">Member Verified</span>
                     {% endif %}
+                    {% if r.year %}
+                        <span class="review-year-badge">{{ r.get_year_display }}</span>
+                    {% endif %}
                 </div>
                 <p>Created by: {% if r.anonymous %}Anonymous Person{% else %}{{ r.profile.user.email }}{% endif %}</p>
                 <p>Comment: {{ r.comment }}</p>

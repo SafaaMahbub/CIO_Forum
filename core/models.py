@@ -163,11 +163,21 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Review(models.Model):
     RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+    YEAR_CHOICES = [
+        (1, "1st Year"),
+        (2, "2nd Year"),
+        (3, "3rd Year"),
+        (4, "4th Year"),
+    ]
 
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     cio = models.ForeignKey(CIO, on_delete=models.CASCADE)
     comment = models.TextField(blank=True)
     anonymous = models.BooleanField(default=False)
+    year = models.IntegerField(
+        choices=YEAR_CHOICES, null=True, blank=True,
+        help_text="Reviewer's year at the time of the review (optional).",
+    )
 
     rating_career_development = models.IntegerField(
         choices=RATING_CHOICES, null=True, blank=True,

@@ -13,6 +13,9 @@
             {% if review.is_member_verified %}
                 <span class="review-verified-badge">Member Verified</span>
             {% endif %}
+            {% if review.year %}
+                <span class="review-year-badge">{{ review.get_year_display }}</span>
+            {% endif %}
         </div>
         <p><strong>Created by:</strong>
             {% if review.anonymous %}
