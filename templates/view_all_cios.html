@@ -13,15 +13,15 @@
         <div class="cioCard cio-item">
             <div class="cio-image">
                 {% if cio.cio_profile_picture %}
-                    <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}" height="200px" width="250px">
+                    <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}">
                 {% else %}
-                     <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}" height="200px" width="250px">
+                    <img src="{{ cio.cio_profile_picture.url }}" alt="{{ cio.name }}">
                 {% endif %}
             </div>
         <div class="cio-info">
                 <h3 class="cio-name">{{ cio.name }}</h3>
                 <h3>About</h3>
-                <p>{{ cio.description }}</p>
+                <p>{{ cio.description|truncatewords:25 }}</p>
             </div>
         </div>
         </a>
