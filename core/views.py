@@ -77,9 +77,26 @@ def uva_dm_only(view_func):
 
     return _wrapped
 
+
+def _attach_review_verification_flags(reviews):
+    reviews = list(reviews)
+    verified_pairs = set(
+        CIOLeadership.objects.filter(is_active=True).values_list("profile_id", "cio_id")
+    )
+    verified_pairs.update(
+        CIOMembership.objects.filter(is_active=True).values_list("profile_id", "cio_id")
+    )
+
+    for review in reviews:
+        review.is_member_verified = (review.profile_id, review.cio_id) in verified_pairs
+
+    return reviews
+
 def homepage(request):
     cios = CIO.objects.all()
-    reviews = Review.objects.select_related("profile__user", "cio").all()
+    reviews = _attach_review_verification_flags(
+        Review.objects.select_related("profile__user", "cio").all()
+    )
     return render(request, "home.html", {"cios": cios, "reviews": reviews})
 
 @login_required
@@ -319,17 +336,9 @@ def cio_homepage(request, cio_id):
 
 @block_user_admin
 def viewAllReviews(request):
-    reviews = list(Review.objects.select_related("profile__user", "cio").all())
-    verified_pairs = set(
-        CIOLeadership.objects.filter(is_active=True).values_list("profile_id", "cio_id")
+    reviews = _attach_review_verification_flags(
+        Review.objects.select_related("profile__user", "cio").all()
     )
-    verified_pairs.update(
-        CIOMembership.objects.filter(is_active=True).values_list("profile_id", "cio_id")
-    )
-
-    for review in reviews:
-        review.is_member_verified = (review.profile_id, review.cio_id) in verified_pairs
-
     return render(request, "view_all_reviews.html", {"reviews": reviews})
 
 @block_user_admin
