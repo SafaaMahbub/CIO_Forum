@@ -741,7 +741,7 @@ button:hover {
     cursor: pointer;
 }
 
-#searchContainer{
+#searchContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -756,7 +756,7 @@ button:hover {
 
 .search-field {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     flex: 1 1 420px;
     max-width: 580px;
     height: 48px;
@@ -787,6 +787,7 @@ button:hover {
 .search-icon {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     color: #9aa3b2;
     font-size: 16px;
     margin-right: 10px;
@@ -821,7 +822,11 @@ button:hover {
 }
 
 .search-btn {
-    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    margin: 0;
     padding: 0 26px;
     border: none;
     border-radius: 0;
@@ -831,9 +836,12 @@ button:hover {
     font-size: 14px;
     letter-spacing: 0.04em;
     cursor: pointer;
-    transition: background 0.2s ease, filter 0.2s ease, transform 0.05s ease;
     position: relative;
     overflow: hidden;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    transition: background 0.2s ease, filter 0.2s ease, transform 0.05s ease;
 }
 
 .search-btn::before {

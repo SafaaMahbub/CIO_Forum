@@ -3,7 +3,7 @@
 {% block content %}
 <div class="info">
     <h1>View All Cios</h1>
-    <form method="get" id="cioFilterForm" action="">
+    <form method="get" id="cioFilterForm" action="" data-preserve-scroll>
         <div id="searchContainer">
             <div class="search-field">
                 <span class="search-icon" aria-hidden="true">&#128269;</span>
@@ -12,7 +12,7 @@
             </div>
             <div class="sort-field">
                 <label for="cioSortSelect" class="sort-label">Sort by:</label>
-                <select name="sort" id="cioSortSelect" onchange="document.getElementById('cioFilterForm').submit()" title="Sort CIOs by rating">
+                <select name="sort" id="cioSortSelect" onchange="preserveScrollSubmit('cioFilterForm')" title="Sort CIOs by rating">
                     <option value="" {% if sort_key == "" %}selected{% endif %}>Default (Name A-Z)</option>
                     <option value="avgCareer" {% if sort_key == "avgCareer" %}selected{% endif %}>Career Development (high to low)</option>
                     <option value="avgEvent" {% if sort_key == "avgEvent" %}selected{% endif %}>Event Quality (high to low)</option>
@@ -21,7 +21,7 @@
                 </select>
             </div>
             {% if search_query %}
-                <a href="{% url 'viewAllCios' %}{% if sort_key %}?sort={{ sort_key }}{% endif %}" class="clear-search-link">Clear search</a>
+                <a href="{% url 'viewAllCios' %}{% if sort_key %}?sort={{ sort_key }}{% endif %}" class="clear-search-link" data-preserve-scroll>Clear search</a>
             {% endif %}
         </div>
     </form>

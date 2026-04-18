@@ -2,7 +2,7 @@
 {% block content %}
 <div class="info">
     <h1>View All Reviews</h1>
-    <form method="get" id="reviewFilterForm" action="">
+    <form method="get" id="reviewFilterForm" action="" data-preserve-scroll>
         <div id="searchContainer">
             <div class="search-field">
                 <span class="search-icon" aria-hidden="true">&#128269;</span>
@@ -10,7 +10,7 @@
                 <button type="submit" class="search-btn">Search</button>
             </div>
             {% if search_query %}
-                <a href="{% url 'viewAllReviews' %}" class="clear-search-link">Clear search</a>
+                <a href="{% url 'viewAllReviews' %}" class="clear-search-link" data-preserve-scroll>Clear search</a>
             {% endif %}
         </div>
     </form>

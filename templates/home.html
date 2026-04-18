@@ -6,7 +6,7 @@
         {% if user.is_authenticated %}
             <h1>Start Your CIO Search</h1>
 
-            <form method="get" id="cioFilterForm" action="">
+            <form method="get" id="cioFilterForm" action="" data-preserve-scroll>
                 {% if review_search_query %}<input type="hidden" name="rq" value="{{ review_search_query }}">{% endif %}
                 <div id="searchContainer">
                     <div class="search-field">
@@ -16,7 +16,7 @@
                     </div>
                     <div class="sort-field">
                         <label for="cioSortSelect" class="sort-label">Sort by:</label>
-                        <select name="sort" id="cioSortSelect" onchange="document.getElementById('cioFilterForm').submit()" title="Sort CIOs by rating">
+                        <select name="sort" id="cioSortSelect" onchange="preserveScrollSubmit('cioFilterForm')" title="Sort CIOs by rating">
                             <option value="" {% if sort_key == "" %}selected{% endif %}>Default (Name A-Z)</option>
                             <option value="avgCareer" {% if sort_key == "avgCareer" %}selected{% endif %}>Career Development (high to low)</option>
                             <option value="avgEvent" {% if sort_key == "avgEvent" %}selected{% endif %}>Event Quality (high to low)</option>
@@ -25,7 +25,7 @@
                         </select>
                     </div>
                     {% if search_query %}
-                        <a href="{% url 'homepage' %}?{% if sort_key %}sort={{ sort_key }}{% endif %}{% if sort_key and review_search_query %}&{% endif %}{% if review_search_query %}rq={{ review_search_query }}{% endif %}" class="clear-search-link">Clear search</a>
+                        <a href="{% url 'homepage' %}?{% if sort_key %}sort={{ sort_key }}{% endif %}{% if sort_key and review_search_query %}&{% endif %}{% if review_search_query %}rq={{ review_search_query }}{% endif %}" class="clear-search-link" data-preserve-scroll>Clear search</a>
                     {% endif %}
                 </div>
             </form>
@@ -87,7 +87,7 @@
             </div>
 
             <h2>User Reviews</h2>
-            <form method="get" id="reviewFilterForm" action="">
+            <form method="get" id="reviewFilterForm" action="" data-preserve-scroll>
                 {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
                 {% if sort_key %}<input type="hidden" name="sort" value="{{ sort_key }}">{% endif %}
                 <div id="searchContainer">
@@ -97,7 +97,7 @@
                         <button type="submit" class="search-btn">Search</button>
                     </div>
                     {% if review_search_query %}
-                        <a href="{% url 'homepage' %}{% if search_query or sort_key %}?{% if search_query %}q={{ search_query }}{% endif %}{% if search_query and sort_key %}&{% endif %}{% if sort_key %}sort={{ sort_key }}{% endif %}{% endif %}" class="clear-search-link">Clear search</a>
+                        <a href="{% url 'homepage' %}{% if search_query or sort_key %}?{% if search_query %}q={{ search_query }}{% endif %}{% if search_query and sort_key %}&{% endif %}{% if sort_key %}sort={{ sort_key }}{% endif %}{% endif %}" class="clear-search-link" data-preserve-scroll>Clear search</a>
                     {% endif %}
                 </div>
             </form>

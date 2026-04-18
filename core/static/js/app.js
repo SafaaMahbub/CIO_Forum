@@ -1,9 +1,19 @@
 let prevImg;
+
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+const PENDING_SCROLL_KEY = 'pendingScrollRestore';
+
 document.addEventListener('DOMContentLoaded', () => {
     setupNotifications();
     setupLogout();
     setupStarRatings();
     renderDisplayStars();
+    setupScrollPreservingForms();
+    setupScrollPreservingLinks();
+    restorePendingScroll();
 
     const picPreview = document.getElementById('picPreview');
     if(picPreview) prevImg = picPreview.src;
@@ -11,6 +21,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.querySelector('input[type="file"]')
     if(fileInput) fileInput.onchange = handleFile;
 });
+
+function setupScrollPreservingForms() {
+    document.querySelectorAll('form[data-preserve-scroll]').forEach(form => {
+        form.addEventListener('submit', savePendingScroll);
+    });
+}
+
+function setupScrollPreservingLinks() {
+    document.querySelectorAll('a[data-preserve-scroll]').forEach(link => {
+        link.addEventListener('click', event => {
+            // Ignore modifier-key clicks and non-primary buttons so new-tab behavior still works
+            if (event.defaultPrevented) return;
+            if (event.button !== 0) return;
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            savePendingScroll();
+        });
+    });
+}
+
+function savePendingScroll() {
+    try {
+        sessionStorage.setItem(PENDING_SCROLL_KEY, String(window.scrollY));
+    } catch (e) {
+        // sessionStorage unavailable (e.g. private mode); silently no-op
+    }
+}
+
+function restorePendingScroll() {
+    let saved;
+    try {
+        saved = sessionStorage.getItem(PENDING_SCROLL_KEY);
+    } catch (e) {
+        return;
+    }
+    if (saved === null) return;
+    sessionStorage.removeItem(PENDING_SCROLL_KEY);
+    const y = parseInt(saved, 10);
+    if (!Number.isNaN(y)) {
+        window.scrollTo(0, y);
+    }
+}
+
+function preserveScrollSubmit(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    savePendingScroll();
+    form.submit();
+}
 
 
 function setupNotifications() {
