@@ -1,19 +1,33 @@
 {% extends "base.html" %}
 
+{% block title %}Request Membership · {{ cio.name }}{% endblock %}
+
 {% block content %}
-<div class="form-box">
-    <h2>Request to Join {{ cio.name }}</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="message">Message to CIO leaders (optional):</label>
-            <textarea id="message" name="message" rows="4" class="form-control"
-                placeholder="Tell the leaders why you'd like to join..."></textarea>
+<div class="page-form-wrap">
+    <a href="{% url 'cio_homepage' cio.id %}" class="form-back-link">&larr; Back to {{ cio.name }}</a>
+
+    <div class="page-form-card">
+        <div class="page-form-header">
+            <h1>Request to Join {{ cio.name }}</h1>
+            <p class="page-form-subtitle">Tell the CIO leaders why you'd like to join. They'll review your request and respond soon.</p>
         </div>
-        <div class="center-text" style="margin-top: 15px;">
-            <button type="submit" class="main-btn">Send Request</button>
-            <a href="{% url 'cio_homepage' cio.id %}" class="main-btn" style="margin-left: 10px;">Cancel</a>
+
+        <div class="page-form-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="message">Message to CIO leaders</label>
+                    <textarea id="message" name="message" rows="5"
+                        placeholder="Tell the leaders why you'd like to join..."></textarea>
+                    <small class="form-help">Optional — a short intro helps leaders make a decision.</small>
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'cio_homepage' cio.id %}" class="form-btn-secondary">Cancel</a>
+                    <button type="submit" class="form-btn-primary">Send Request</button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

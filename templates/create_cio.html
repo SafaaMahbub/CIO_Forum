@@ -1,25 +1,53 @@
 {% extends "base.html" %}
 
+{% block title %}Create CIO · CIO Rating System{% endblock %}
+
 {% block content %}
+<div class="page-form-wrap">
+    <a href="{% url 'viewAllCios' %}" class="form-back-link">&larr; Back to all CIOs</a>
 
-<h2>Create a CIO</h2>
-
-<div class="form-box">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label>CIO Name:</label>
-        {{ form.name }}
-
-        <label>Description:</label>
-        {{ form.description }}
-        <label>Cio's Logo:</label>
-        {{ form.cio_profile_picture }}
-
-        <div class="center-text">
-            <button type="submit">Create CIO</button>
+    <div class="page-form-card">
+        <div class="page-form-header">
+            <h1>Create a CIO</h1>
+            <p class="page-form-subtitle">Register a new Contracted Independent Organization with a name, description, and logo.</p>
         </div>
-        
-    </form>
-</div>
 
+        <div class="page-form-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">CIO Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <ul class="form-errors">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">Description</label>
+                    {{ form.description }}
+                    <small class="form-help">What does this CIO do? Who is it for?</small>
+                    {% if form.description.errors %}
+                        <ul class="form-errors">{% for e in form.description.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.cio_profile_picture.id_for_label }}">CIO Logo</label>
+                    {{ form.cio_profile_picture }}
+                    <small class="form-help">Upload a square image if possible (PNG or JPG).</small>
+                    {% if form.cio_profile_picture.errors %}
+                        <ul class="form-errors">{% for e in form.cio_profile_picture.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'viewAllCios' %}" class="form-btn-secondary">Cancel</a>
+                    <button type="submit" class="form-btn-primary">Create CIO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

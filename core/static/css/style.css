@@ -1675,3 +1675,254 @@ button:hover {
     }
 }
 
+/* =====================================================
+   Modern Form Card (create review / CIO / new message)
+===================================================== */
+.page-form-wrap {
+    max-width: 640px;
+    margin: 30px auto;
+    padding: 0 16px;
+}
+
+.form-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    color: #2a6fb5;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.form-back-link:hover {
+    color: #22558d;
+    text-decoration: underline;
+}
+
+.page-form-card {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;
+    overflow: hidden;
+}
+
+.page-form-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #2a6fb5 0%, #4a8fd4 100%);
+    color: #ffffff;
+}
+
+.page-form-header h1,
+.page-form-header h2 {
+    margin: 0 0 4px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.page-form-subtitle {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.92;
+}
+
+.page-form-body {
+    padding: 28px 28px 24px 28px;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group > label {
+    display: block;
+    margin-bottom: 6px;
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-group .form-help {
+    display: block;
+    margin-top: 5px;
+    color: #6b7a90;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.form-control,
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="url"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #d0dbe8;
+    border-radius: 10px;
+    background: #f8fafd;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #1f2937;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+.form-control:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #2a6fb5;
+    background: #ffffff;
+    box-shadow: rgba(42, 111, 181, 0.15) 0px 0px 0px 3px;
+}
+
+.form-group input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed #cfdcec;
+    border-radius: 10px;
+    background: #f8fafd;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    box-sizing: border-box;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: #2a6fb5;
+    background: #eef5fb;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 560px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-section-title {
+    margin: 22px 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e6ecf3;
+    color: #22558d;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.form-errors {
+    margin: 6px 0 0 0;
+    padding: 8px 12px;
+    background: #fef2f2;
+    color: #991b1b;
+    border-radius: 8px;
+    list-style: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.form-errors li {
+    margin: 0;
+    list-style: none;
+}
+
+.form-actions {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #e6ecf3;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.form-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 11px 22px;
+    background: linear-gradient(135deg, #2a6fb5 0%, #4a8fd4 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: rgba(42, 111, 181, 0.3) 0px 4px 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.form-btn-primary:hover {
+    background: linear-gradient(135deg, #22558d 0%, #3d7dc9 100%);
+    transform: translateY(-1px);
+    box-shadow: rgba(42, 111, 181, 0.45) 0px 8px 16px;
+}
+
+.form-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: rgba(42, 111, 181, 0.3) 0px 2px 6px;
+}
+
+.form-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 20px;
+    background: #ffffff;
+    color: #2a6fb5;
+    border: 1px solid #cfdcec;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.form-btn-secondary:hover {
+    background: #f1f6fc;
+    border-color: #2a6fb5;
+}
+
+.form-prefilled-banner {
+    margin: 0 0 20px 0;
+    padding: 10px 14px;
+    background: #e0e7ff;
+    color: #3730a3;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-left: 3px solid #4f46e5;
+}
+
+/* Scope star-rating inside the new form card so spacing matches */
+.page-form-card .star-rating-group {
+    margin-bottom: 14px;
+}
+
+.page-form-card .star-rating-group label {
+    margin-bottom: 6px;
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+

@@ -1,55 +1,91 @@
 {% extends "base.html" %}
 
+{% block title %}Create Review · CIO Rating System{% endblock %}
+
 {% block content %}
-    <h1>Create a Review{% if prefilled_cio %} for {{ prefilled_cio.name }}{% endif %}</h1>
-    <div class="form-box">
-        <form action="{% url 'create_review' %}" method="post">
-            {% csrf_token %}
+<div class="page-form-wrap">
+    <a href="{% url 'viewAllReviews' %}" class="form-back-link">&larr; Back to all reviews</a>
 
-            {{ form.cio.label_tag }}
-            {{ form.cio }}
-            {% if form.cio.errors %}
-                <ul class="alert">{% for e in form.cio.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    <div class="page-form-card">
+        <div class="page-form-header">
+            <h1>Create a Review{% if prefilled_cio %} for {{ prefilled_cio.name }}{% endif %}</h1>
+            <p class="page-form-subtitle">Share your honest experience to help fellow students find the right CIO.</p>
+        </div>
+
+        <div class="page-form-body">
+            {% if prefilled_cio %}
+                <div class="form-prefilled-banner">
+                    Reviewing: <strong>{{ prefilled_cio.name }}</strong>
+                </div>
             {% endif %}
 
-            {{ form.comment.label_tag }}
-            {{ form.comment }}
-            {% if form.comment.errors %}
-                <ul class="alert">{% for e in form.comment.errors %}<li>{{ e }}</li>{% endfor %}</ul>
-            {% endif %}
+            <form action="{% url 'create_review' %}" method="post">
+                {% csrf_token %}
 
-            {{ form.anonymous.label_tag }}
-            {{ form.anonymous }}
-            {% if form.anonymous.errors %}
-                <ul class="alert">{% for e in form.anonymous.errors %}<li>{{ e }}</li>{% endfor %}</ul>
-            {% endif %}
-
-            {{ form.year.label_tag }}
-            {{ form.year }}
-            {% if form.year.errors %}
-                <ul class="alert">{% for e in form.year.errors %}<li>{{ e }}</li>{% endfor %}</ul>
-            {% endif %}
-
-            {% for field in form %}
-                {% if field.name|slice:":7" == "rating_" %}
-                <div class="star-rating-group">
-                    <label>{{ field.label }}</label>
-                    <div class="star-rating" data-field="{{ field.name }}">
-                        {% for i in "12345" %}
-                            <span class="star" data-value="{{ i }}">&#9733;</span>
-                        {% endfor %}
+                {% if not prefilled_cio %}
+                    <div class="form-group">
+                        <label for="{{ form.cio.id_for_label }}">{{ form.cio.label }}</label>
+                        {{ form.cio }}
+                        {% if form.cio.errors %}
+                            <ul class="form-errors">{% for e in form.cio.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
                     </div>
-                    <input type="hidden" name="{{ field.name }}" value="">
-                    {% if field.errors %}
-                        <ul class="alert">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% else %}
+                    <input type="hidden" name="cio" value="{{ prefilled_cio.id }}">
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
+                    {{ form.comment }}
+                    {% if form.comment.errors %}
+                        <ul class="form-errors">{% for e in form.comment.errors %}<li>{{ e }}</li>{% endfor %}</ul>
                     {% endif %}
                 </div>
-                {% endif %}
-            {% endfor %}
 
-            <div class="center-text">
-                <button type="submit">Submit Review</button>
-            </div>
-        </form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.anonymous.id_for_label }}">{{ form.anonymous.label }}</label>
+                        {{ form.anonymous }}
+                        {% if form.anonymous.errors %}
+                            <ul class="form-errors">{% for e in form.anonymous.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.year.id_for_label }}">{{ form.year.label }}</label>
+                        {{ form.year }}
+                        <small class="form-help">Leave blank if you'd rather not share.</small>
+                        {% if form.year.errors %}
+                            <ul class="form-errors">{% for e in form.year.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h3 class="form-section-title">Ratings (optional)</h3>
+
+                {% for field in form %}
+                    {% if field.name|slice:":7" == "rating_" %}
+                        <div class="star-rating-group">
+                            <label>{{ field.label }}</label>
+                            <div class="star-rating" data-field="{{ field.name }}">
+                                {% for i in "12345" %}
+                                    <span class="star" data-value="{{ i }}">&#9733;</span>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="{{ field.name }}" value="">
+                            {% if field.errors %}
+                                <ul class="form-errors">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="form-actions">
+                    <a href="{% url 'viewAllReviews' %}" class="form-btn-secondary">Cancel</a>
+                    <button type="submit" class="form-btn-primary">Submit Review</button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 {% endblock %}

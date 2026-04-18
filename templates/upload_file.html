@@ -1,33 +1,51 @@
 {% extends "base.html" %}
 
-{% block title %}
-Upload File
-{% endblock %}
+{% block title %}Upload File · {{ cio.name }}{% endblock %}
 
 {% block content %}
-<div class="form-box">
+<div class="page-form-wrap">
+    <a href="{% url 'cio_homepage' cio.id %}" class="form-back-link">&larr; Back to {{ cio.name }}</a>
 
-    <h1>Upload File</h1>
-
-    <p class="center-text">Upload a file for {{ cio.name }}</p>
-
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <div class="form-field">
-            {{ form.as_p }}
+    <div class="page-form-card">
+        <div class="page-form-header">
+            <h1>Upload a File</h1>
+            <p class="page-form-subtitle">Share a document, slide deck, or resource with members of {{ cio.name }}.</p>
         </div>
 
-        <div class="center-text">
-            <button type="submit" class="main-btn">
-                Upload
-            </button>
-        </div>
-    </form>
+        <div class="page-form-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-    <div class="center-text">
-        <a href="/" class="main-btn">Back to home</a>
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                    {{ form.title }}
+                    <small class="form-help">Give the file a clear, descriptive title.</small>
+                    {% if form.title.errors %}
+                        <ul class="form-errors">{% for e in form.title.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.file.id_for_label }}">{{ form.file.label }}</label>
+                    {{ form.file }}
+                    <small class="form-help">Choose a file to upload.</small>
+                    {% if form.file.errors %}
+                        <ul class="form-errors">{% for e in form.file.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                {% if form.non_field_errors %}
+                    <ul class="form-errors">
+                        {% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="form-actions">
+                    <a href="{% url 'cio_homepage' cio.id %}" class="form-btn-secondary">Cancel</a>
+                    <button type="submit" class="form-btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
     </div>
-
 </div>
 {% endblock %}

@@ -3,14 +3,42 @@
 {% block title %}New message · CIO Rating System{% endblock %}
 
 {% block content %}
-<div class="form-box">
-    <h2>New message</h2>
-    <p><a href="{% url 'messages_inbox' %}">← Back to inbox</a></p>
+<div class="page-form-wrap">
+    <a href="{% url 'messages_inbox' %}" class="form-back-link">&larr; Back to inbox</a>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="main-btn">Start conversation</button>
-    </form>
+    <div class="page-form-card">
+        <div class="page-form-header">
+            <h1>Start a new conversation</h1>
+            <p class="page-form-subtitle">Find a fellow UVA student by their username to begin chatting.</p>
+        </div>
+
+        <div class="page-form-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.recipient_username.id_for_label }}">{{ form.recipient_username.label }}</label>
+                    {{ form.recipient_username }}
+                    {% if form.recipient_username.help_text %}
+                        <small class="form-help">{{ form.recipient_username.help_text }}</small>
+                    {% endif %}
+                    {% if form.recipient_username.errors %}
+                        <ul class="form-errors">{% for e in form.recipient_username.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                {% if form.non_field_errors %}
+                    <ul class="form-errors">
+                        {% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div class="form-actions">
+                    <a href="{% url 'messages_inbox' %}" class="form-btn-secondary">Cancel</a>
+                    <button type="submit" class="form-btn-primary">Start conversation</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
