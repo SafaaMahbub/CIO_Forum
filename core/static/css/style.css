@@ -13,7 +13,7 @@ body {
     */
     background: linear-gradient(to left top, #cedef8, #a4d1ff, #dde5ff, #cedef8, #f0f1ff);
     background-attachment: fixed;
-    overflow: auto;
+    overflow-x: hidden;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -41,24 +41,36 @@ nav {
     margin-left: 15px;
     margin-right: 15px;
     margin-top: 10px;
-    padding-right: 15px;
-    border-radius: 50px;
+    padding: 6px 15px;
+    border-radius: 36px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    row-gap: 6px;
+    column-gap: 8px;
     background-color: #b9ccf6;
     color: black;
     overflow: visible;
     margin-bottom: 20px;
     font-size: 19px;
+    box-sizing: border-box;
+}
+
+.navLinks {
+    min-width: 0;
 }
 
 .navLinks ul {
     display: flex;
+    flex-wrap: wrap;
     list-style: none;
     margin: 0;
+    padding: 0;
     align-items: center;
+    row-gap: 4px;
+    column-gap: 2px;
 }
 
 .navLogo{
@@ -969,7 +981,7 @@ button:hover {
 }
 
 .cioCard{
-    width: 500px;
+    width: 400px;
     border-radius: 20px;
     box-sizing: border-box;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -1186,4 +1198,42 @@ button:hover {
     max-width: 600px;
     margin: 10px auto 0;
     color: #444;
+}
+
+/* =====================================================
+   Responsive navbar tweaks
+===================================================== */
+@media (max-width: 900px) {
+    nav {
+        font-size: 17px;
+        padding: 6px 10px;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
+    nav a {
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    nav {
+        justify-content: center;
+        font-size: 15px;
+        border-radius: 24px;
+    }
+
+    nav a {
+        padding: 6px 8px;
+    }
+
+    .navLogo {
+        width: 50px;
+        height: 30px;
+    }
+
+    .navPic {
+        width: 32px;
+        height: 32px;
+    }
 }
