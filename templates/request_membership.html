@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-box">
+    <h2>Request to Join {{ cio.name }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="message">Message to CIO leaders (optional):</label>
+            <textarea id="message" name="message" rows="4" class="form-control"
+                placeholder="Tell the leaders why you'd like to join..."></textarea>
+        </div>
+        <div class="center-text" style="margin-top: 15px;">
+            <button type="submit" class="main-btn">Send Request</button>
+            <a href="{% url 'cio_homepage' cio.id %}" class="main-btn" style="margin-left: 10px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

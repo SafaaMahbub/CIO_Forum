@@ -49,7 +49,7 @@ nav {
     align-items: center;
     background-color: #b9ccf6;
     color: black;
-    overflow: hidden;
+    overflow: visible;
     margin-bottom: 20px;
     font-size: 19px;
 }
@@ -82,6 +82,26 @@ nav a {
 nav a:has(.navLogo) {
     padding: 0;
     display: flex;
+}
+
+.nav-messages-link {
+    position: relative;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    padding: 0 4px;
 }
 
 /* =====================================================
@@ -810,6 +830,55 @@ button:hover {
     text-decoration: underline;
 }
 
+
+/* =====================================================
+   Membership Requests (messages inbox)
+===================================================== */
+.membership-request-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.membership-request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.membership-request-item:last-child {
+    border-bottom: none;
+}
+
+.request-message {
+    margin: 5px 0 0;
+    color: #555;
+    font-style: italic;
+}
+
+.request-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.approve-btn {
+    background-color: #28a745;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
 
 /* =====================================================
    Welcome Banner (unauthenticated homepage)

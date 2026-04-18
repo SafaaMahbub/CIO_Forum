@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CIO, Profile, CIOLeadership, Review, Conversation, Message
+from .models import CIO, Profile, CIOLeadership, CIOMembership, MembershipRequest, Review, Conversation, Message
 
 
 
@@ -7,11 +7,16 @@ class CIOLeadershipInline(admin.TabularInline):
     model = CIOLeadership
     extra = 1
 
+class CIOMembershipInline(admin.TabularInline):
+    model = CIOMembership
+    extra = 1
+
 
 @admin.register(CIO)
 class CIOAdmin(admin.ModelAdmin):
     list_display = (
         "name", "total_leaders", "active_leaders", "inactive_leaders",
+        "total_members", "active_members", "inactive_members",
         "avg_career_development", "avg_event_quality",
         "avg_time_commitment", "avg_community_inclusiveness",
     )
@@ -20,7 +25,7 @@ class CIOAdmin(admin.ModelAdmin):
         "avg_time_commitment", "avg_community_inclusiveness",
     )
     search_fields = ("name", "description")
-    inlines = [CIOLeadershipInline]
+    inlines = [CIOLeadershipInline, CIOMembershipInline]
 
 
 @admin.register(Profile)
@@ -28,7 +33,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "get_email", "role")
     list_filter = ("role",)
     search_fields = ("user__username", "user__email")
-    inlines = [CIOLeadershipInline]
+    inlines = [CIOLeadershipInline, CIOMembershipInline]
 
     def get_email(self, obj):
         return obj.user.email
@@ -39,6 +44,18 @@ class ProfileAdmin(admin.ModelAdmin):
 class CIOLeadershipAdmin(admin.ModelAdmin):
     list_display = ("profile", "cio", "is_active")
     list_filter = ("is_active", "cio")
+    search_fields = ("profile__user__username", "profile__user__email", "cio__name")
+
+@admin.register(CIOMembership)
+class CIOMembershipAdmin(admin.ModelAdmin):
+    list_display = ("profile", "cio", "is_active")
+    list_filter = ("is_active", "cio")
+    search_fields = ("profile__user__username", "profile__user__email", "cio__name")
+
+@admin.register(MembershipRequest)
+class MembershipRequestAdmin(admin.ModelAdmin):
+    list_display = ("profile", "cio", "status", "created_at")
+    list_filter = ("status", "cio")
     search_fields = ("profile__user__username", "profile__user__email", "cio__name")
 
 @admin.register(Review)

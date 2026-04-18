@@ -49,6 +49,29 @@
 
             <hr class="cio-section-divider">
 
+            <h2>Members</h2>
+            <div class="cio-membership-section">
+                {% if members %}
+                    <ul>
+                        {% for member in members %}
+                            <li>{{ member.profile.user.username }} ({{ member.profile.user.email }})</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No members yet.</p>
+                {% endif %}
+
+                {% if role == "student" and not is_leader and not is_member and not has_pending_request %}
+                    <div class="center-text" style="margin-top: 10px;">
+                        <a href="{% url 'request_membership' cio.id %}" class="main-btn">Request to Join</a>
+                    </div>
+                {% elif has_pending_request %}
+                    <p><em>Your membership request is pending.</em></p>
+                {% endif %}
+            </div>
+
+            <hr class="cio-section-divider">
+
             <h2>Uploaded Files</h2>
             <ul class="cio-file-list">
                 {% for file in cio.uploads.all %}

@@ -3,6 +3,36 @@
 {% block title %}Messages · CIO Rating System{% endblock %}
 
 {% block content %}
+
+{% if pending_requests %}
+<div class="form-box">
+    <h2>Membership Requests</h2>
+    <ul class="membership-request-list">
+        {% for req in pending_requests %}
+        <li class="membership-request-item">
+            <div class="request-info">
+                <strong>{{ req.profile.user.username }}</strong> ({{ req.profile.user.email }})
+                wants to join <strong>{{ req.cio.name }}</strong>
+                {% if req.message %}
+                    <p class="request-message">"{{ req.message }}"</p>
+                {% endif %}
+            </div>
+            <div class="request-actions">
+                <form method="POST" action="{% url 'handle_membership_request' req.id 'approve' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="main-btn approve-btn">Approve</button>
+                </form>
+                <form method="POST" action="{% url 'handle_membership_request' req.id 'reject' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="main-btn reject-btn">Reject</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
 <div class="form-box">
     <h2>Messages</h2>
     <p class="center-text"><a href="{% url 'messages_new' %}" class="main-btn">New message</a></p>
@@ -23,7 +53,7 @@
         {% endfor %}
     </ul>
     {% else %}
-    <p class="center-text">No conversations yet. Start one with “New message”.</p>
+    <p class="center-text">No conversations yet. Start one with "New message".</p>
     {% endif %}
 </div>
 {% endblock %}

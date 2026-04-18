@@ -44,7 +44,14 @@
                 {% if user.profile.role != "guest" %}
                     <li><a href="/create-review/">Create Review</a></li>
                     <li><a href="/create-cio/">Create CIO</a></li>
-                    <li><a href="{% url 'messages_inbox' %}">Messages</a></li>
+                    <li>
+                        <a href="{% url 'messages_inbox' %}" class="nav-messages-link">
+                            Messages
+                            {% if total_notifications > 0 %}
+                                <span class="notif-badge">{{ total_notifications }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
                 {% endif %}
                 <li><a href="#" id="logout-link" class="nav-link">Logout</a></li>
                 <li><a href="/profile/">

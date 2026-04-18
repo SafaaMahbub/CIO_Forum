@@ -70,6 +70,30 @@
 
             </span>
         </div>
+
+        <div class="row">
+            <span class="label">CIO Membership:</span>
+            <span class="value">
+
+                {% if profile.role == "guest" %}
+                    Not a verified UVA student
+
+                {% else %}
+                    {% with memberships=profile.memberships.all %}
+                        {% if memberships %}
+                            <ul>
+                                {% for membership in memberships %}
+                                    <li>{{ membership.cio.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            Not currently a member of any CIO
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+
+            </span>
+        </div>
     </div>
 
 

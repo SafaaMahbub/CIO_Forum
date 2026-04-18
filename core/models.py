@@ -51,6 +51,15 @@ class CIO(models.Model):
     def inactive_leaders(self):
         return self.leaderships.filter(is_active=False).count()
 
+    def total_members(self):
+        return self.memberships.count()
+
+    def active_members(self):
+        return self.memberships.filter(is_active=True).count()
+
+    def inactive_members(self):
+        return self.memberships.filter(is_active=False).count()
+
     def update_average_ratings(self):
         reviews = self.review_set.all()
         for field, avg_field in [
@@ -114,6 +123,13 @@ class Profile(models.Model):
         CIO,
         through="CIOLeadership",
         related_name="profiles",
+        blank=True
+    )
+
+    member_cios = models.ManyToManyField(
+        CIO,
+        through="CIOMembership",
+        related_name="member_profiles",
         blank=True
     )
 
@@ -198,6 +214,60 @@ class CIOLeadership(models.Model):
         super().save(*args, **kwargs)
 
 
+class CIOMembership(models.Model):
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name="memberships"
+    )
+    cio = models.ForeignKey(
+        CIO,
+        on_delete=models.CASCADE,
+        related_name="memberships"
+    )
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("profile", "cio")
+
+    def __str__(self):
+        status = "Active" if self.is_active else "Inactive"
+        return f"{self.profile.user.username} - {self.cio.name} ({status})"
+
+    def save(self, *args, **kwargs):
+        if self.profile.role == "guest":
+            raise ValueError("Guest users cannot join CIOs.")
+        super().save(*args, **kwargs)
+
+
+class MembershipRequest(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    ]
+
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name="membership_requests"
+    )
+    cio = models.ForeignKey(
+        CIO,
+        on_delete=models.CASCADE,
+        related_name="membership_requests"
+    )
+    message = models.TextField(blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("profile", "cio")
+
+    def __str__(self):
+        return f"{self.profile.user.username} → {self.cio.name} ({self.status})"
+
+
 class Conversation(models.Model):
     """One DM thread between two users. user1_id is always less than user2_id."""
 
@@ -245,6 +315,7 @@ class Message(models.Model):
         related_name="sent_dm_messages",
     )
     body = models.TextField()
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

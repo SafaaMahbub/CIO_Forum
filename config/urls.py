@@ -33,6 +33,8 @@ from core.views import (
     viewAllReviews,
     viewAllCios,
     cio_homepage,
+    request_membership,
+    handle_membership_request,
 )
 
 urlpatterns = [
@@ -54,6 +56,8 @@ path("view-all-cios/",viewAllCios, name = "viewAllCios"),
         name="messages_start_user",
     ),
     path("messages/<int:conversation_id>/", messages_thread, name="messages_thread"),
+    path("cio/<int:cio_id>/request-membership/", request_membership, name="request_membership"),
+    path("membership-request/<int:request_id>/<str:action>/", handle_membership_request, name="handle_membership_request"),
     path('manage-users/', views.manage_users, name='manage_users'),
     path('update-role/<int:user_id>/', views.update_role, name='update_role'),
     path("redirect-after-login/", views.redirect_after_login, name="redirect_after_login"),

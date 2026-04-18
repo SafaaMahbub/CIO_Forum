@@ -12,6 +12,8 @@ from .decorators import block_user_admin, user_admin_only
 from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm
 from .models import (
     CIOLeadership,
+    CIOMembership,
+    MembershipRequest,
     CIO,
     Review,
     UploadedFile,
@@ -198,7 +200,21 @@ def messages_inbox(request):
         other = c.other_participant(request.user)
         last = c.messages.order_by("-created_at").first()
         rows.append({"conversation": c, "other": other, "last": last})
-    return render(request, "messages/inbox.html", {"rows": rows})
+
+    pending_requests = []
+    if hasattr(request.user, "profile"):
+        led_cio_ids = request.user.profile.leaderships.filter(
+            is_active=True
+        ).values_list("cio_id", flat=True)
+        if led_cio_ids:
+            pending_requests = MembershipRequest.objects.filter(
+                cio_id__in=led_cio_ids, status="pending"
+            ).select_related("profile__user", "cio").order_by("-created_at")
+
+    return render(request, "messages/inbox.html", {
+        "rows": rows,
+        "pending_requests": pending_requests,
+    })
 
 @uva_dm_only
 @block_user_admin
@@ -221,6 +237,7 @@ def messages_thread(request, conversation_id):
             return redirect("messages_thread", conversation_id=conv.id)
     else:
         form = DmMessageForm()
+    conv.messages.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
     msg_list = conv.messages.select_related("sender").all()
     return render(
         request,
@@ -281,12 +298,24 @@ def cio_homepage(request, cio_id):
     cio = get_object_or_404(CIO, id=cio_id)
     reviews = Review.objects.filter(cio=cio).select_related("profile__user")
     leaders = cio.leaderships.filter(is_active=True).select_related("profile__user")
+    members = cio.memberships.filter(is_active=True).select_related("profile__user")
     role = None
     is_leader = False
+    is_member = False
+    has_pending_request = False
     if request.user.is_authenticated and hasattr(request.user, "profile"):
-        role = request.user.profile.role
-        is_leader = leaders.filter(profile=request.user.profile).exists()
-    return render(request, "cio_homepage.html", {"cio": cio, "reviews": reviews, "leaders": leaders, "role": role, "is_leader": is_leader})
+        profile = request.user.profile
+        role = profile.role
+        is_leader = leaders.filter(profile=profile).exists()
+        is_member = members.filter(profile=profile).exists()
+        has_pending_request = MembershipRequest.objects.filter(
+            profile=profile, cio=cio, status="pending"
+        ).exists()
+    return render(request, "cio_homepage.html", {
+        "cio": cio, "reviews": reviews, "leaders": leaders, "members": members,
+        "role": role, "is_leader": is_leader, "is_member": is_member,
+        "has_pending_request": has_pending_request,
+    })
 
 @block_user_admin
 def viewAllReviews(request):
@@ -313,3 +342,72 @@ def viewAllCios(request):
         "uploads": uploads,
         "cios": cios,
     })
+
+
+@login_required
+@block_user_admin
+def request_membership(request, cio_id):
+    cio = get_object_or_404(CIO, id=cio_id)
+    profile = request.user.profile
+
+    if profile.role != "student":
+        messages.error(request, "Only students can request CIO membership.")
+        return redirect("cio_homepage", cio_id=cio.id)
+
+    if cio.leaderships.filter(profile=profile, is_active=True).exists():
+        messages.info(request, "You are already a leader of this CIO.")
+        return redirect("cio_homepage", cio_id=cio.id)
+
+    if cio.memberships.filter(profile=profile, is_active=True).exists():
+        messages.info(request, "You are already a member of this CIO.")
+        return redirect("cio_homepage", cio_id=cio.id)
+
+    if MembershipRequest.objects.filter(profile=profile, cio=cio, status="pending").exists():
+        messages.info(request, "You already have a pending request for this CIO.")
+        return redirect("cio_homepage", cio_id=cio.id)
+
+    if request.method == "POST":
+        msg = request.POST.get("message", "").strip()
+        MembershipRequest.objects.update_or_create(
+            profile=profile, cio=cio,
+            defaults={"message": msg, "status": "pending"},
+        )
+        messages.success(request, "Your membership request has been sent!")
+        return redirect("cio_homepage", cio_id=cio.id)
+
+    return render(request, "request_membership.html", {"cio": cio})
+
+
+@login_required
+@block_user_admin
+def handle_membership_request(request, request_id, action):
+    mem_request = get_object_or_404(MembershipRequest, id=request_id, status="pending")
+    cio = mem_request.cio
+    profile = request.user.profile
+
+    if not cio.leaderships.filter(profile=profile, is_active=True).exists():
+        return HttpResponseForbidden("Only CIO leaders can manage membership requests.")
+
+    requester_user = mem_request.profile.user
+
+    if action == "approve":
+        mem_request.status = "approved"
+        mem_request.save()
+        CIOMembership.objects.get_or_create(
+            profile=mem_request.profile, cio=cio,
+            defaults={"is_active": True},
+        )
+        dm_body = f"Your request to join {cio.name} has been approved! Welcome aboard."
+        messages.success(request, f"Approved {requester_user.username} as a member.")
+    elif action == "reject":
+        mem_request.status = "rejected"
+        mem_request.save()
+        dm_body = f"Your request to join {cio.name} has been declined."
+        messages.info(request, f"Rejected {requester_user.username}'s request.")
+    else:
+        return redirect("messages_inbox")
+
+    conv = get_or_create_conversation(request.user, requester_user)
+    Message.objects.create(conversation=conv, sender=request.user, body=dm_body)
+
+    return redirect("messages_inbox")
