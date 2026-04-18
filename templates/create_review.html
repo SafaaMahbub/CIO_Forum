@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Create a Review</h1>
+    <h1>Create a Review{% if prefilled_cio %} for {{ prefilled_cio.name }}{% endif %}</h1>
     <div class="form-box">
-        <form action="" method="post">
+        <form action="{% url 'create_review' %}" method="post">
             {% csrf_token %}
 
             {{ form.cio.label_tag }}

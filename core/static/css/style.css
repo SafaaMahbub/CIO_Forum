@@ -516,6 +516,11 @@ button:hover {
     width: 100%;
 }
 
+.cio-create-review-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .review-block{
     background-color: whitesmoke;
     margin: 15px;
@@ -729,7 +734,7 @@ button:hover {
 }
 
 .cioCard{
-    width: 300px;
+    width: 500px;
     border-radius: 20px;
     box-sizing: border-box;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;

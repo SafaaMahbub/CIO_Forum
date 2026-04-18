@@ -171,25 +171,35 @@ def view_upload(request, id):
     upload = UploadedThing.objects.get(id=id)
     return render(request, "view_upload.html", {"upload": upload})
 
+def _build_review_form_from_query(request):
+    """Return (form, prefilled_cio) for a GET request, honoring ?cio=<id>."""
+    cio_param = request.GET.get("cio")
+    if not cio_param:
+        return ReviewForm(), None
+    try:
+        prefilled_cio = CIO.objects.get(pk=int(cio_param))
+    except (CIO.DoesNotExist, ValueError):
+        return ReviewForm(), None
+    return ReviewForm(initial={"cio": prefilled_cio}), prefilled_cio
+
+
 @block_user_admin
 def create_review(request):
-    profile =request.user.profile
+    profile = request.user.profile
     if profile.role != "student":
         messages.error(request, "You do not have permission to create a review for a CIO.")
         return redirect("profile")
+
     if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():
-
-            #this checks if the current user submitted a review for the cio - if they already submitted
-            #a review,the page will display an error message will appear
-            if Review.objects.filter(profile=profile,cio=form.cleaned_data["cio"]).exists():
+            if Review.objects.filter(profile=profile, cio=form.cleaned_data["cio"]).exists():
                 messages.error(request, "Review already exists. Please choose a different CIO from the list.")
                 return redirect("create_review")
 
             cio = form.cleaned_data["cio"]
             Review.objects.create(
-                profile=request.user.profile,
+                profile=profile,
                 cio=cio,
                 comment=form.cleaned_data["comment"],
                 anonymous=form.cleaned_data["anonymous"],
@@ -201,9 +211,10 @@ def create_review(request):
             cio.update_average_ratings()
             messages.success(request, "Review has been created successfully.")
             return redirect("viewAllReviews")
-    else:
-        form = ReviewForm()
-    return render(request, "create_review.html", {"form": form})
+        return render(request, "create_review.html", {"form": form, "prefilled_cio": None})
+
+    form, prefilled_cio = _build_review_form_from_query(request)
+    return render(request, "create_review.html", {"form": form, "prefilled_cio": prefilled_cio})
 
 @uva_dm_only
 @block_user_admin
@@ -320,6 +331,9 @@ def cio_homepage(request, cio_id):
     is_leader = False
     is_member = False
     has_pending_request = False
+    has_existing_review = False
+    is_uva_student = False
+    can_review = False
     if request.user.is_authenticated and hasattr(request.user, "profile"):
         profile = request.user.profile
         role = profile.role
@@ -328,10 +342,16 @@ def cio_homepage(request, cio_id):
         has_pending_request = MembershipRequest.objects.filter(
             profile=profile, cio=cio, status="pending"
         ).exists()
+        has_existing_review = Review.objects.filter(profile=profile, cio=cio).exists()
+        is_uva_student = profile.role == "student" and _email_is_uva(request.user)
+        can_review = is_uva_student and not has_existing_review
     return render(request, "cio_homepage.html", {
         "cio": cio, "reviews": reviews, "leaders": leaders, "members": members,
         "role": role, "is_leader": is_leader, "is_member": is_member,
         "has_pending_request": has_pending_request,
+        "has_existing_review": has_existing_review,
+        "is_uva_student": is_uva_student,
+        "can_review": can_review,
     })
 
 @block_user_admin

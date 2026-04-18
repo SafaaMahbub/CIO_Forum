@@ -92,6 +92,17 @@
     </div>
 
     <h2>Reviews</h2>
+    {% if user.is_authenticated %}
+        <div class="cio-create-review-section center-text">
+            {% if can_review %}
+                <a href="{% url 'create_review' %}?cio={{ cio.id }}" class="main-btn">Create Review</a>
+            {% elif has_existing_review %}
+                <p><em>You have already made a review for this CIO.</em></p>
+            {% elif not is_uva_student %}
+                <p><em>Only UVA students can make reviews.</em></p>
+            {% endif %}
+        </div>
+    {% endif %}
     <div class="reviewContainer">
         {% if reviews %}
             {% for r in reviews %}
