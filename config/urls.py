@@ -36,6 +36,7 @@ from core.views import (
     cio_homepage,
     request_membership,
     handle_membership_request,
+    manage_cio,
 )
 
 urlpatterns = [
@@ -45,6 +46,7 @@ urlpatterns = [
     path('profile/', profile, name="profile"),
     path("create-cio/", create_cio, name="create_cio"),
     path("cio/<int:cio_id>/", cio_homepage, name="cio_homepage"),
+    path("cio/<int:cio_id>/manage/", manage_cio, name="manage_cio"),
     path("cio/<int:cio_id>/upload/", upload_file, name="upload_file"),
     path("create-review/", create_review, name="create_review"),
     path("view-all-reviews/",viewAllReviews, name = "viewAllReviews"),

@@ -9,7 +9,7 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.views import redirect_to_login
 from .decorators import block_user_admin, user_admin_only
 
-from .forms import CIOForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm, CommentForm
+from .forms import CIOForm, CIOEditForm, UploadedFileForm, ReviewForm, StartDmForm, DmMessageForm, profileForm, CommentForm
 from .models import (
     CIOLeadership,
     CIOMembership,
@@ -612,3 +612,113 @@ def handle_membership_request(request, request_id, action):
     Message.objects.create(conversation=conv, sender=request.user, body=dm_body)
 
     return redirect("messages_inbox")
+
+
+def _require_cio_leader(request, cio):
+    """Return (profile, forbidden_response). forbidden_response is None if allowed."""
+    if not request.user.is_authenticated or not hasattr(request.user, "profile"):
+        return None, redirect_to_login(request.get_full_path())
+    profile = request.user.profile
+    if not cio.leaderships.filter(profile=profile, is_active=True).exists():
+        return profile, HttpResponseForbidden("Only CIO leaders can manage this CIO.")
+    return profile, None
+
+
+@login_required
+@block_user_admin
+def manage_cio(request, cio_id):
+    """CIO leader management page: edit profile, handle requests, members, files."""
+    cio = get_object_or_404(CIO, id=cio_id)
+    _, forbidden = _require_cio_leader(request, cio)
+    if forbidden is not None:
+        return forbidden
+
+    edit_form = CIOEditForm(instance=cio)
+    upload_form = UploadedFileForm()
+
+    if request.method == "POST":
+        action = request.POST.get("action", "")
+
+        if action == "edit_cio":
+            edit_form = CIOEditForm(request.POST, request.FILES, instance=cio)
+            if edit_form.is_valid():
+                edit_form.save()
+                messages.success(request, "CIO details updated successfully.")
+                return redirect("manage_cio", cio_id=cio.id)
+
+        elif action == "upload_file":
+            upload_form = UploadedFileForm(request.POST, request.FILES)
+            if upload_form.is_valid():
+                uploaded_file = upload_form.save(commit=False)
+                uploaded_file.cio = cio
+                uploaded_file.uploaded_by = request.user
+                uploaded_file.save()
+                messages.success(request, f"Uploaded '{uploaded_file.title}'.")
+                return redirect("manage_cio", cio_id=cio.id)
+
+        elif action == "delete_file":
+            file_id = request.POST.get("file_id")
+            uploaded_file = get_object_or_404(UploadedFile, id=file_id, cio=cio)
+            title = uploaded_file.title
+            if uploaded_file.file:
+                uploaded_file.file.delete(save=False)
+            uploaded_file.delete()
+            messages.success(request, f"Deleted '{title}'.")
+            return redirect("manage_cio", cio_id=cio.id)
+
+        elif action == "remove_member":
+            membership_id = request.POST.get("membership_id")
+            membership = get_object_or_404(CIOMembership, id=membership_id, cio=cio)
+            username = membership.profile.user.username
+            membership.delete()
+            messages.success(request, f"Removed {username} from members.")
+            return redirect("manage_cio", cio_id=cio.id)
+
+        elif action in ("approve_request", "reject_request"):
+            req_id = request.POST.get("request_id")
+            mem_request = get_object_or_404(
+                MembershipRequest, id=req_id, cio=cio, status="pending"
+            )
+            requester_user = mem_request.profile.user
+            if action == "approve_request":
+                mem_request.status = "approved"
+                mem_request.save()
+                CIOMembership.objects.get_or_create(
+                    profile=mem_request.profile, cio=cio,
+                    defaults={"is_active": True},
+                )
+                dm_body = (
+                    f"Your request to join {cio.name} has been approved! "
+                    "Welcome aboard."
+                )
+                messages.success(request, f"Approved {requester_user.username}.")
+            else:
+                mem_request.status = "rejected"
+                mem_request.save()
+                dm_body = f"Your request to join {cio.name} has been declined."
+                messages.info(request, f"Rejected {requester_user.username}'s request.")
+
+            conv = get_or_create_conversation(request.user, requester_user)
+            Message.objects.create(conversation=conv, sender=request.user, body=dm_body)
+            return redirect("manage_cio", cio_id=cio.id)
+
+    pending_requests = (
+        MembershipRequest.objects.filter(cio=cio, status="pending")
+        .select_related("profile__user")
+        .order_by("-created_at")
+    )
+    memberships = (
+        cio.memberships.filter(is_active=True)
+        .select_related("profile__user")
+        .order_by("profile__user__username")
+    )
+    uploads = cio.uploads.select_related("uploaded_by").order_by("-uploaded_at")
+
+    return render(request, "cio_management.html", {
+        "cio": cio,
+        "edit_form": edit_form,
+        "upload_form": upload_form,
+        "pending_requests": pending_requests,
+        "memberships": memberships,
+        "uploads": uploads,
+    })

@@ -3,6 +3,12 @@
 
 {% block content %}
 <div class="cio-homepage">
+    {% if is_leader %}
+        <a href="{% url 'manage_cio' cio.id %}" class="cio-manage-btn" title="Manage this CIO">
+            <span class="cio-manage-btn-icon" aria-hidden="true">&#9881;</span>
+            <span>Manage CIO</span>
+        </a>
+    {% endif %}
     <h1 class="center-text">{{ cio.name }}</h1>
     {% if cio.categories.all %}
         <div class="category-pill-list category-pill-list-center">
@@ -90,11 +96,6 @@
                     <li>No files uploaded for this CIO yet.</li>
                 {% endfor %}
             </ul>
-            {% if is_leader %}
-                <div class="center-text">
-                    <a href="{% url 'upload_file' cio.id %}" class="main-btn">Upload File</a>
-                </div>
-            {% endif %}
         </div>
     </div>
 

@@ -33,6 +33,28 @@ class CIOForm(forms.ModelForm):
         model = CIO
         fields = ["name", "description", "cio_profile_picture", "categories"]
 
+
+class CIOEditForm(forms.ModelForm):
+    """Edit form for existing CIOs; profile picture is optional on edit."""
+
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label="Categories (optional)",
+    )
+
+    class Meta:
+        model = CIO
+        fields = ["name", "description", "cio_profile_picture", "categories"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["cio_profile_picture"].required = False
+        self.fields["cio_profile_picture"].help_text = (
+            "Leave empty to keep the current profile picture."
+        )
+
 class UploadedFileForm(forms.ModelForm):
     class Meta:
         model = UploadedFile

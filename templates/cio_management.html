@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manage {{ cio.name }} · CIO Rating System{% endblock %}
+
+{% block content %}
+<div class="page-form-wrap manage-cio-wrap">
+    <a href="{% url 'cio_homepage' cio.id %}" class="form-back-link">&larr; Back to {{ cio.name }}</a>
+
+    <div class="page-form-header manage-cio-hero">
+        <h1>Manage {{ cio.name }}</h1>
+        <p class="page-form-subtitle">Update your CIO's profile, handle membership, and manage shared files — all in one place.</p>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- Section 1: Edit CIO profile and description                    -->
+    <!-- ============================================================= -->
+    <div class="page-form-card manage-section">
+        <div class="manage-section-header">
+            <h2>CIO Profile</h2>
+            <p class="manage-section-sub">Update the public name, description, logo, and categories.</p>
+        </div>
+
+        <div class="page-form-body">
+            <form method="post" enctype="multipart/form-data" class="manage-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="edit_cio">
+
+                {% if cio.cio_profile_picture %}
+                    <div class="manage-current-image">
+                        <img src="{{ cio.cio_profile_picture.url }}" alt="Current logo for {{ cio.name }}">
+                        <span class="manage-current-image-label">Current logo</span>
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ edit_form.name.id_for_label }}">CIO Name</label>
+                    {{ edit_form.name }}
+                    {% if edit_form.name.errors %}
+                        <ul class="form-errors">{% for e in edit_form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ edit_form.description.id_for_label }}">Description</label>
+                    {{ edit_form.description }}
+                    <small class="form-help">What does this CIO do? Who is it for?</small>
+                    {% if edit_form.description.errors %}
+                        <ul class="form-errors">{% for e in edit_form.description.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ edit_form.cio_profile_picture.id_for_label }}">CIO Logo</label>
+                    {{ edit_form.cio_profile_picture }}
+                    <small class="form-help">{{ edit_form.cio_profile_picture.help_text }}</small>
+                    {% if edit_form.cio_profile_picture.errors %}
+                        <ul class="form-errors">{% for e in edit_form.cio_profile_picture.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>{{ edit_form.categories.label }}</label>
+                    <div class="category-checkbox-group">
+                        {% for choice in edit_form.categories %}
+                            <label class="category-checkbox">
+                                {{ choice.tag }}
+                                <span>{{ choice.choice_label }}</span>
+                            </label>
+                        {% empty %}
+                            <p class="form-help">No categories available yet.</p>
+                        {% endfor %}
+                    </div>
+                    {% if edit_form.categories.errors %}
+                        <ul class="form-errors">{% for e in edit_form.categories.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'cio_homepage' cio.id %}" class="form-btn-secondary">Cancel</a>
+                    <button type="submit" class="form-btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- Section 2: Pending membership requests                         -->
+    <!-- ============================================================= -->
+    <div class="page-form-card manage-section">
+        <div class="manage-section-header">
+            <h2>
+                Membership Requests
+                {% if pending_requests %}
+                    <span class="manage-section-count">{{ pending_requests|length }}</span>
+                {% endif %}
+            </h2>
+            <p class="manage-section-sub">Approve or reject students who asked to join.</p>
+        </div>
+
+        <div class="manage-list">
+            {% for req in pending_requests %}
+                <div class="manage-list-row">
+                    <div class="manage-list-info">
+                        <div class="manage-list-title">{{ req.profile.user.username }}</div>
+                        <div class="manage-list-meta">{{ req.profile.user.email }} · requested {{ req.created_at|date:"M j, Y" }}</div>
+                        {% if req.message %}
+                            <div class="manage-list-note">&ldquo;{{ req.message }}&rdquo;</div>
+                        {% endif %}
+                    </div>
+                    <div class="manage-list-actions">
+                        <form method="post" class="manage-inline-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="approve_request">
+                            <input type="hidden" name="request_id" value="{{ req.id }}">
+                            <button type="submit" class="manage-btn manage-btn-approve">Approve</button>
+                        </form>
+                        <form method="post" class="manage-inline-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject_request">
+                            <input type="hidden" name="request_id" value="{{ req.id }}">
+                            <button type="submit" class="manage-btn manage-btn-reject">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="manage-empty">No pending membership requests.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- Section 3: Current members                                     -->
+    <!-- ============================================================= -->
+    <div class="page-form-card manage-section">
+        <div class="manage-section-header">
+            <h2>
+                Current Members
+                {% if memberships %}
+                    <span class="manage-section-count">{{ memberships|length }}</span>
+                {% endif %}
+            </h2>
+            <p class="manage-section-sub">Remove members who should no longer have access.</p>
+        </div>
+
+        <div class="manage-list">
+            {% for mem in memberships %}
+                <div class="manage-list-row">
+                    <div class="manage-list-info">
+                        <div class="manage-list-title">{{ mem.profile.user.username }}</div>
+                        <div class="manage-list-meta">{{ mem.profile.user.email }}</div>
+                    </div>
+                    <div class="manage-list-actions">
+                        <form method="post" class="manage-inline-form" onsubmit="return confirm('Remove {{ mem.profile.user.username|escapejs }} from this CIO?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remove_member">
+                            <input type="hidden" name="membership_id" value="{{ mem.id }}">
+                            <button type="submit" class="manage-btn manage-btn-remove">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="manage-empty">No members yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- Section 4: Uploaded files                                      -->
+    <!-- ============================================================= -->
+    <div class="page-form-card manage-section">
+        <div class="manage-section-header">
+            <h2>
+                Uploaded Files
+                {% if uploads %}
+                    <span class="manage-section-count">{{ uploads|length }}</span>
+                {% endif %}
+            </h2>
+            <p class="manage-section-sub">Upload new files or delete existing ones.</p>
+        </div>
+
+        <div class="page-form-body">
+            <form method="post" enctype="multipart/form-data" class="manage-upload-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="upload_file">
+
+                <div class="form-group">
+                    <label for="{{ upload_form.title.id_for_label }}">File Title</label>
+                    {{ upload_form.title }}
+                    {% if upload_form.title.errors %}
+                        <ul class="form-errors">{% for e in upload_form.title.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ upload_form.file.id_for_label }}">Select File</label>
+                    {{ upload_form.file }}
+                    {% if upload_form.file.errors %}
+                        <ul class="form-errors">{% for e in upload_form.file.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions form-actions-single">
+                    <button type="submit" class="form-btn-primary">Upload File</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="manage-list manage-list-files">
+            {% for f in uploads %}
+                <div class="manage-list-row">
+                    <div class="manage-list-info">
+                        <div class="manage-list-title">
+                            <a href="{{ f.file.url }}" target="_blank" rel="noopener">{{ f.title }}</a>
+                        </div>
+                        <div class="manage-list-meta">
+                            uploaded by {{ f.uploaded_by.username }} · {{ f.uploaded_at|date:"M j, Y" }}
+                        </div>
+                    </div>
+                    <div class="manage-list-actions">
+                        <form method="post" class="manage-inline-form" onsubmit="return confirm('Delete {{ f.title|escapejs }}?');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_file">
+                            <input type="hidden" name="file_id" value="{{ f.id }}">
+                            <button type="submit" class="manage-btn manage-btn-remove">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="manage-empty">No files uploaded yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

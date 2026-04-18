@@ -59,7 +59,7 @@
                         {% if leaderships %}
                             <ul>
                                 {% for leadership in leaderships %}
-                                    <li>{{ leadership.cio.name }}</li>
+                                    <li><a href="{% url 'cio_homepage' leadership.cio.id %}" class="profile-cio-link">{{ leadership.cio.name }}</a></li>
                                 {% endfor %}
                             </ul>
                         {% else %}
@@ -83,7 +83,7 @@
                         {% if memberships %}
                             <ul>
                                 {% for membership in memberships %}
-                                    <li>{{ membership.cio.name }}</li>
+                                    <li><a href="{% url 'cio_homepage' membership.cio.id %}" class="profile-cio-link">{{ membership.cio.name }}</a></li>
                                 {% endfor %}
                             </ul>
                         {% else %}
