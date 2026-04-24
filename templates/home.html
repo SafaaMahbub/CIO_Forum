@@ -97,7 +97,11 @@
                 </a>
                 {% endfor %}
             {% else %}
-                <p>No CIOs yet!</p>
+                {% if search_query or category_slug %}
+                    <p>No results found.</p>
+                {% else %}
+                    <p>No CIOs yet!</p>
+                {% endif %}
             {% endif %}
             </div>
 

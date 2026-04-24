@@ -85,7 +85,11 @@
 
         {% endfor %}
     {%  else %}
-        <p>No Cios yet!</p>
+        {% if search_query or category_slug %}
+            <p>No results found.</p>
+        {% else %}
+            <p>No Cios yet!</p>
+        {% endif %}
     {% endif %}
     </div>
 

@@ -33,7 +33,7 @@
         </div>
 
         <div class="row">
-            <span class="label">Name:</span>
+            <span class="label">Username:</span>
             <span class="value">{{ user.username }}</span>
         </div>
 
@@ -44,7 +44,9 @@
 
         <div class="row">
             <span class="label">Role:</span>
-            <span class="value">{{ profile.get_role_display }}</span>
+            <span class="value">
+                {{ profile.get_role_display }}{% if profile.leaderships.all %}, CIO Executive{% endif %}{% if profile.memberships.all %}, CIO Member{% endif %}
+            </span>
         </div>
 
         <div class="row">
